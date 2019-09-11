@@ -1,9 +1,13 @@
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const path = require('path');
 
-const adminRoutes = require('./routes/admin.js')
+
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+
+const {adminRoutes} = require('./routes/admin')
 const shopRoutes = require('./routes/shop')
 
 const port = 8080
@@ -15,7 +19,7 @@ app.use('/admin',adminRoutes);
 app.use(shopRoutes);
 
 app.use((req,res,next)=>{
-    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'))
+    res.status(404).render('404', { pageTitle: 'Page Not Found', path:''})
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}`))
