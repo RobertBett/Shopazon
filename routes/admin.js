@@ -1,25 +1,13 @@
 const express = require('express');
 const router = express.Router();
-
-const products =[]
-
-router.get('/add-product', (req, res, next)=>{
-    res.render('add-product', {
-            pageTitle: 'Add Product',
-            path:'/admin/add-product',
-            formsCSS: true,
-            productCSS: true,
-            activeAddProduct: true
-        })
-})
-
-router.post('/add-product',(req,res, next)=>{
-    const {title} = req.body
-    console.log(title)
-    products.push({title})
-    res.redirect('/');
-})
+const { getAddProduct, postAddProduct,getAdminProducts } = require('../controllers/admin')
 
 
-exports.adminRoutes = router;
-exports.products = products
+router.get('/admin/add-product', getAddProduct)
+router.get('/admin/products', getAdminProducts)
+
+router.post('/admin/add-product', postAddProduct);
+
+
+// exports.adminRoutes = router;
+module.exports = router
