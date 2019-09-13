@@ -16,6 +16,7 @@ const getProductsFromFile =(done) =>{
 
 module.exports = class Product{
     constructor({title, description,imageUrl, price}){
+        this.id = Math.random().toString();
         this.title = title;
         this.description = description;
         this.imageUrl = imageUrl;
@@ -25,7 +26,6 @@ module.exports = class Product{
     save(){
         //FIRST ARG IS FOR THE ROOT DIRECTORY 2ND IS FOR THE FOLDER 3RD IS FOR THE FILE NAME
         // const filePath = path.join(rootDirectory, 'data', 'products.json' );
-
         getProductsFromFile(products =>{
             products.push(this)
             fs.writeFile(filePath, JSON.stringify(products), (err)=>{
@@ -38,4 +38,10 @@ module.exports = class Product{
         getProductsFromFile(done)
     }
     
+    static findById(id, done){
+        getProductsFromFile(products=> {
+         const product = products.find(product => product.id === id)
+         done(product)
+        })
+    }
 }
