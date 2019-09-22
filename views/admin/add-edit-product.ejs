@@ -5,24 +5,24 @@
 <body>
     <%- include('../includes/navigation.ejs') %>
     <main>
-        <form class="product-form" action="/admin/add-product" method="POST">
+        <form class="product-form" action="/admin/<%= edit ? `edit-product/${product.id}` : 'add-product' %>" method="POST">
             <div class="form-control">
                 <label for="title">Title</label>
-                <input type="text" name="title" id="title" value="<%= edit &&  product.title %>">
+                <input type="text" name="title" id="title" value="<%= edit ? product.title : '' %>">
             </div>
             <div class="form-control">
                     <label for="description">Description</label>
-                    <textarea  name="description" rows='5' id="description" > <%= edit &&  product.description %></textarea>
+                    <textarea  name="description" rows='5' id="description" > <%= edit ?  product.description : ''%></textarea>
             </div>
             <div class="form-control">
                     <label for="imageUrl">Image</label>
-                    <input type="text" name="imageUrl" id="imageUrl" value="<%= edit &&  product.imageUrl %>">
+                    <input type="text" name="imageUrl" id="imageUrl" value="<%= edit ?  product.imageUrl : '' %>">
             </div>
             <div class="form-control">
                     <label for="price">price</label>
-                    <input type="number" name="price" id="price" step="0.01" value="<%= edit &&  product.price %>">
+                    <input type="number" name="price" id="price" step="0.01" value="<%= edit ? product.price : '' %>">
             </div>
-            <button class="btn" type="submit">Add Product</button>
+            <button class="btn" type="submit"> <%= edit ? 'Update Product' : 'Add Product' %></button>
         </form>
     </main>
 <%- include('../includes/footer.ejs') %>

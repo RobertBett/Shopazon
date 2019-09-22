@@ -4,13 +4,16 @@ const Cart = require('../models/Cart');
 
 exports.getCart = (req,res, next) =>{
     Cart.fetchCart(({products})=>{
-        const cartProducts = products.forEach(product => {
-            console.log(product, 'THESE ARE THE CART PRODUCTS??')
-            Product.findById(product.id, (product)=>{
-                console.log(product, 'THESE ARE THE CART PRODUCTS??')
-            })
-        });
-
+            let completeProducts =[];
+            if(products){ 
+                for (product of products) {
+                   const test = Product.findById(product.id, (completeProduct)=>{
+                    return completeProducts.push({completeProduct, quantity: product.quantity});
+                    })
+                    console.log(test)
+                }
+            }
+        console.log(completeProducts) 
         res.render('shop/cart', {
             pageTitle: 'Cart',
             path:'/cart',
@@ -72,7 +75,8 @@ exports.getProductDetail = (req,res,next) =>{
 exports.postCartItem = ( req, res, next) =>{
     const { productId } = req.params;
     Product.findById(productId, (product)=>{
-        Cart.addProduct(productId, product.price,(cart)=>{
+        Cart.addProduct(productId, product.title, product.price,(cart)=>{
+            console.log(cart)
             res.redirect('/cart')
         })
     })
