@@ -69,4 +69,15 @@ module.exports = class Cart{
     static fetchCart(done){
         getCartFromFile(done);
     };
+
+    static getCart(done){
+        fs.readFile(filePath,(err, fileContent) =>{
+            const cart = JSON.parse(fileContent)
+            if(err){
+                done(null)
+            }else{
+                done(cart)
+            }
+        })
+    }
 }

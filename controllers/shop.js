@@ -3,25 +3,29 @@ const Cart = require('../models/Cart');
 
 
 exports.getCart = (req,res, next) =>{
-    Cart.fetchCart(({products})=>{
-            let completeProducts =[];
-            if(products){ 
-                for (product of products) {
-                   const test = Product.findById(product.id, (completeProduct)=>{
-                    return completeProducts.push({completeProduct, quantity: product.quantity});
-                    })
-                    console.log(test)
+        Cart.getCart(cart =>{
+            Product.fetchAll(products =>{
+                const cartProducts = [];
+                for(product of products){
+                    const cartProductData = cart.products.find(prod => prod.id === product.id)
+                    console.log(cartProductData, 'TESTIGNG')
+                    if(cartProductData){
+                        cartProducts.push({productData: product, quantity: cartProductData.quantity});
+                    }
                 }
-            }
-        console.log(completeProducts) 
-        res.render('shop/cart', {
-            pageTitle: 'Cart',
-            path:'/cart',
-            formsCSS: true,
-            productCSS: true,
-            activeAddProduct: true
-        });
-    })
+                console.log(cart) 
+                res.render('shop/cart', {
+                    pageTitle: 'Cart',
+                    products: cartProducts,
+                    path:'/cart',
+                    formsCSS: true,
+                    productCSS: true,
+                    activeAddProduct: true
+                });
+            })
+        })
+        
+
 
 };
 
@@ -79,6 +83,14 @@ exports.postCartItem = ( req, res, next) =>{
             console.log(cart)
             res.redirect('/cart')
         })
+    })
+}
+
+exports.postCartDelete = ( req, res, next) =>{
+    const { productId } = req.params;
+    Product.findById(productId, (product) =>{
+      Cart.deleteProductFromCart(productId, product.price)
+      res.redirect('/cart')
     })
 }
 
