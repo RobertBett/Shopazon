@@ -15,5 +15,5 @@ router.post('/admin/edit-product/:productId', postEditProduct);
 router.post('/admin/delete-product/:productId', postDeleteProduct)
 
 
-// exports.adminRoutes = router;
+// exports.adminRoutes = router
 module.exports = router
