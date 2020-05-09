@@ -3,22 +3,29 @@ const Cart = require('../models/Cart');
 
 
 exports.getCart = (req,res, next) =>{
-    Cart.fetchCart(({products})=>{
-        const cartProducts = products.forEach(product => {
-            console.log(product, 'THESE ARE THE CART PRODUCTS??')
-            Product.findById(product.id, (product)=>{
-                console.log(product, 'THESE ARE THE CART PRODUCTS??')
+        Cart.getCart(cart =>{
+            Product.fetchAll(products =>{
+                const cartProducts = [];
+                for(product of products){
+                    const cartProductData = cart.products.find(prod => prod.id === product.id)
+                    console.log(cartProductData, 'TESTIGNG')
+                    if(cartProductData){
+                        cartProducts.push({productData: product, quantity: cartProductData.quantity});
+                    }
+                }
+                console.log(cart) 
+                res.render('shop/cart', {
+                    pageTitle: 'Cart',
+                    products: cartProducts,
+                    path:'/cart',
+                    formsCSS: true,
+                    productCSS: true,
+                    activeAddProduct: true
+                });
             })
-        });
+        })
+        
 
-        res.render('shop/cart', {
-            pageTitle: 'Cart',
-            path:'/cart',
-            formsCSS: true,
-            productCSS: true,
-            activeAddProduct: true
-        });
-    })
 
 };
 
@@ -72,9 +79,18 @@ exports.getProductDetail = (req,res,next) =>{
 exports.postCartItem = ( req, res, next) =>{
     const { productId } = req.params;
     Product.findById(productId, (product)=>{
-        Cart.addProduct(productId, product.price,(cart)=>{
+        Cart.addProduct(productId, product.title, product.price,(cart)=>{
+            console.log(cart)
             res.redirect('/cart')
         })
+    })
+}
+
+exports.postCartDelete = ( req, res, next) =>{
+    const { productId } = req.params;
+    Product.findById(productId, (product) =>{
+      Cart.deleteProductFromCart(productId, product.price)
+      res.redirect('/cart')
     })
 }
 
