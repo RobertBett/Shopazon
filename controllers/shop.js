@@ -49,17 +49,19 @@ exports.getCheckout = (req,res, next) =>{
     });
 };
 exports.getProducts = (req,res, next)=>{
-    Product.fetchAll((products)=> {
-       res.render('shop/product-list',{
-           products,
-           pageTitle:'Shop',
-           path:'/products',
-           hasProducts: products.length > 0,
-           activeShop:true,
-           productCSS: true,
-       });
+    Product.fetchAll()
+    .then(([products, fieldData]) => {
+        res.render('shop/product-list',{
+            products,
+            pageTitle:'Shop',
+            path:'/products',
+            hasProducts: products.length > 0,
+            activeShop:true,
+            productCSS: true,
+        });
+    }).catch((err) => {
+        console.log(err)
     });
-
 };
 
 exports.getProductDetail = (req,res,next) =>{
@@ -97,15 +99,17 @@ exports.postCartDelete = ( req, res, next) =>{
 
 
 exports.getShop = (req,res, next)=>{
-    Product.fetchAll((products)=> {
-       res.render('shop/index',{
-           products,
-           pageTitle:'Shop',
-           path:'/',
-           hasProducts: products.length > 0,
-           activeShop:true,
-           productCSS: true,
-       });
+    Product.fetchAll().then(([products, fieldData]) => {
+        res.render('shop/index',{
+            products,
+            pageTitle:'Shop',
+            path:'/',
+            hasProducts: products.length > 0,
+            activeShop:true,
+            productCSS: true,
+        });    
+    }).catch((err) => {
+        
     });
 
 };
