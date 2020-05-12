@@ -4,7 +4,8 @@ const Cart = require('../models/Cart');
 
 exports.getCart = (req,res, next) =>{
         Cart.getCart(cart =>{
-            Product.fetchAll(products =>{
+            Product.fetchAll()
+            .then(([products]) => {
                 const cartProducts = [];
                 for(product of products){
                     const cartProductData = cart.products.find(prod => prod.id === product.id)
@@ -22,7 +23,10 @@ exports.getCart = (req,res, next) =>{
                     productCSS: true,
                     activeAddProduct: true
                 });
-            })
+            }).catch((err) => {
+                
+            });
+       
         })
         
 
@@ -50,7 +54,7 @@ exports.getCheckout = (req,res, next) =>{
 };
 exports.getProducts = (req,res, next)=>{
     Product.fetchAll()
-    .then(([products, fieldData]) => {
+    .then(([products]) => {
         res.render('shop/product-list',{
             products,
             pageTitle:'Shop',
@@ -66,15 +70,20 @@ exports.getProducts = (req,res, next)=>{
 
 exports.getProductDetail = (req,res,next) =>{
     const { productId } = req.params;
-    Product.findById(productId, (product)=>{
+    Product.findById(productId)
+    .then(([product]) => {
+        console.log({product})
         res.render('shop/product-detail',{
-            product,
+            product:product[0],
             pageTitle:'Shop',
             path:`/products/${product.id}`,
             activeShop:true,
             productCSS: true,
         })
-    })
+    }).catch((err) => {
+        console.log(err)
+    });
+
 
 }
 
@@ -99,7 +108,8 @@ exports.postCartDelete = ( req, res, next) =>{
 
 
 exports.getShop = (req,res, next)=>{
-    Product.fetchAll().then(([products, fieldData]) => {
+    Product.fetchAll()
+    .then(([products]) => {
         res.render('shop/index',{
             products,
             pageTitle:'Shop',
@@ -109,7 +119,7 @@ exports.getShop = (req,res, next)=>{
             productCSS: true,
         });    
     }).catch((err) => {
-        
+        console.log(err)
     });
 
 };

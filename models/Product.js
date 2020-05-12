@@ -43,6 +43,9 @@ module.exports = class Product{
         //     }
             
         // })
+        db.execute('INSERT INTO products (title, price, description, imageUrl) VALUES(?,?,?,?)'
+        ,[this.title, this.price, this.description, this.imageUrl]
+        );
     }
 
     static fetchAll(){
@@ -65,5 +68,6 @@ module.exports = class Product{
         //  const product = products.find(product => product.id === id)
         //  done(product)
         // })
+       return db.execute('SELECT * FROM products WHERE products.id = ?', [id])
     }
 }
