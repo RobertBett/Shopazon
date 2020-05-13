@@ -2,7 +2,8 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const { get404Page } = require('./controllers/errors')
+const { get404Page } = require('./controllers/errors');
+const sequelize = require('./utils/database');
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -23,4 +24,11 @@ app.use(shopRoutes,);
 
 app.use('/',get404Page); 
 
-app.listen(port, () => {console.log(`on Port:${port}`), console.log(`running on http://localhost:${port}`)})
+sequelize.sync() 
+.then((result) => {
+    app.listen(port, () => {console.log(`on Port:${port}`), console.log(`running on http://localhost:${port}`)})
+}).catch((err) => {
+    console.log(err)
+});
+
+

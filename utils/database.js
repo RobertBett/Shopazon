@@ -1,12 +1,13 @@
-/* CONNECTING A  MY SQL DATABASE */
+const Sequeilze = require('sequelize');
 
-const mysql = require('mysql2');
-
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    database: 'node-complete',
-    password: 'NODEparty2020'
+const sequelize = new Sequeilze('node-complete', 'root', 'NODEparty2020', { 
+    dialect : 'mysql', 
+    host: 'localhost'
 });
-
-module.exports = pool.promise();
+sequelize.authenticate()
+.then((result) => {
+    console.log('Connection Successful')
+}).catch((err) => {
+    console.log('Unable to connnect', err)
+});
+module.exports = sequelize;
