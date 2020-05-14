@@ -2,16 +2,30 @@
 </head>
 <body>
     <%- include('../includes/navigation.ejs') %>
-    <h1 class="cart__item">Your Cart</h1>
+    <h1><i class="icon-shopping-cart"></i>  Your Cart</h1>
     <main>
         <% if (products.length > 0){ %>
             <ul class="cart__item-list">
                 <% products.forEach(product => { %>
                     <li class="cart__item">
-                        <p><%= product.title %> ( <%= product.cartItem.quantity %> )</p>
-                        <p>Subtotal:  <%= product.cartItem.price %></p>
+                        <div class="cart__image">
+                            <img src="<%= product.imageUrl %>" alt="A Book">
+                        </div>
+                        <span class="cart__title">
+                            <h1><%= product.title %> </h1>
+                            <form action="/cart-delete-one-item/<%= product.id %>" method="post">
+                                <button class="btn danger" type="submit"><i class="icon-minus"></i></button>
+                            </form> 
+                            ( <%= product.cartItem.quantity %> )
+                            <form action="/cart-add-one-item/<%= product.id %>" method="post">
+                                <button class="btn" type="submit"><i class="icon-plus"></i></button>
+                            </form>
+                        </span>
+                        <div class="cart__total">
+                            <p>Subtotal: $<%= product.cartItem.price %></p>
+                        </div>
                         <form action="/cart-delete-item/<%= product.id %>" method="post">
-                            <button class="btn danger" type="submit">Delete</button>
+                            <button class="btn danger" type="submit"><i class="icon-trash"></i> Remove</button>
                         </form>
                     </li>
                 <% }) %>

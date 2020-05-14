@@ -90,8 +90,8 @@ exports.postCartItem = ( req, res, next) =>{
         // If product is already in cart;
         if(products.length > 0){ 
             console.log('IM TIRED')
-           return CartItem.update({
-                quantity: products[0].cartItem.quantity +=1,
+           return CartItem.increment({
+                quantity: 1,
                 price:products[0].price * products[0].cartItem.quantity, 
             },{ where:{ productId }})
         }
@@ -118,7 +118,50 @@ exports.postCartDelete = ( req, res, next) =>{
     res.redirect('/cart') 
 }
 
+exports.postCartItemDelete = ( req, res, next) =>{
+    const { productId } = req.params;
+    let productPrice =1;
+    Product.findByPk(productId)
+        .then((product) => {
+            productPrice = product.price;
+            CartItem.findAll({where:{ productId }})
+            .then(([cartItem]) => {
+                if (cartItem.quantity <= 1) {
+                    return CartItem.destroy({ where:{ productId } })
+                }
+                return CartItem.decrement({ quantity: 1, price: productPrice},{where:{ productId }} )
+            }).catch((err)=>{
+                console.error(err);
+            })
+        })
+        .then(() => {
+            res.redirect('/cart'); 
+        })
+        .catch((err) => {
+            console.error(err,['IS IT THIS ONE??']);
+        }); 
+}
 
+exports.postAddCartItem = ( req, res, next) =>{
+    const { productId } = req.params;
+    let productPrice;
+    Product.findByPk(productId)
+        .then((product) => {
+            productPrice = product.price;
+            CartItem.findAll({where:{ productId}})
+            .then(() => {
+                CartItem.increment({ quantity: 1, price: productPrice},{where:{ productId }} )
+            })
+            .catch((err) => {
+                console.error(err)
+            });
+            res.redirect('/cart') 
+        }).catch((err)=>{
+            console.error(err);
+        })
+
+    
+}
 
 exports.getShop = (req,res, next)=>{
     Product.findAll()
