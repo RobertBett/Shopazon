@@ -6,7 +6,7 @@ const sequelize = new Sequeilze('node-complete', 'root', 'NODEparty2020', {
 });
 sequelize.authenticate()
 .then((result) => {
-    console.log('Connection Successful')
+    console.log('Connection to Sequelize Successful!')
 }).catch((err) => {
     console.log('Unable to connnect', err)
 });
