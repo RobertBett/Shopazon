@@ -1,4 +1,6 @@
 const Product = require('../models/Product');
+const CartItem = require('../models/CartItem');
+const Cart = require('../models/Cart');
 
 exports.getAddProduct =  (req, res, next)=>{
     res.render('admin/add-edit-product', {
@@ -10,7 +12,6 @@ exports.getAddProduct =  (req, res, next)=>{
 
 exports.getEditProduct =  (req, res, next)=>{
     const {edit} = req.query
-    console.log(req.user,'fSDFJNBSDLKJNS')
     const {productId} = req.params
     req.user.getProducts({ where: { id : productId}})
     .then(([product]) => {
@@ -55,7 +56,6 @@ exports.postAddProduct = (req,res, next)=>{
     })
     .then((result) => {
         res.redirect('/');
-        console.log(result, 'POST ADD PRODUCT')
     })
     .catch((err) => {
         console.log(err)
@@ -65,15 +65,24 @@ exports.postAddProduct = (req,res, next)=>{
 exports.postEditProduct = (req, res, next) =>{
     const {productId} = req.params;
     const {title, price, imageUrl, description} = req.body;
-    Product.update({
-        title,
-        price,
-        imageUrl,
-        description
-    },{ 
-        where:{ id : productId}
+    
+    req.user.getCart({ where:{ userId: req.user.id}})
+    .then((cart) => {
+        Product.update({
+            title,
+            price,
+            imageUrl,
+            description
+        },{ where:{ id : productId} })
+        return cart.getProducts({ where:{ id:productId }})
     })
-    .then((result) => {
+    .then(([product]) => {
+        return product && CartItem.update(
+            { price:price * product.cartItem.quantity }  
+            ,{ where:{ productId }}
+        ) 
+    })
+    .then(() => {
         res.redirect('/admin/products')
     }).catch((err) => {
         console.log(err)
@@ -85,7 +94,7 @@ exports.postDeleteProduct = (req, res, next) =>{
     Product.destroy({
         where:{ id : productId }
     })
-    .then((product) => {
+    .then(() => {
         res.redirect('/admin/products');
     }).catch((err) => {
         console.log(err)

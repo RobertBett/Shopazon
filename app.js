@@ -8,12 +8,15 @@ const Product = require('./models/Product');
 const User = require('./models/User');
 const Cart = require('./models/Cart');
 const CartItem = require('./models/CartItem');
+const chalk = require('chalk');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const Order = require('./models/Order');
+const OrderItem = require('./models/OrderItem');
 
 
 const port = 8080
@@ -43,9 +46,12 @@ User.hasOne(Cart);
 Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem});
 Product.belongsToMany(Cart, { through: CartItem});
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, {through: OrderItem});
 
 sequelize.sync()
-.then((result) => {
+.then(() => {
   return User.findByPk(1)  
 })
 .then((user) => {
@@ -55,12 +61,17 @@ sequelize.sync()
     return user;
 })
 .then((user) => {
-    return user.createCart();
+    user.getCart()
+    .then((cart) => {
+        return !cart && user.createCart();
+    }).catch((err) => {
+        console.log(err)
+    });
 })
 .then(() => {
     app.listen(port, () => {
-        console.log(`on Port:${port}`), 
-        console.log(`running on http://localhost:${port}`)
+        console.log(chalk.bgGreen.bold(`On Port:${port}`))
+        console.log(chalk.bgGreen.bold.underline(`Running on http://localhost:${port}`))
     })
 })
 .catch((err) => {

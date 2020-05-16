@@ -30,8 +30,11 @@
                     </li>
                 <% }) %>
             </ul>
-
-
+            <div class="centered">
+                <form action="/create-order" method="post">
+                    <button class="btn" type="submit"><i class="icon-shopping-cart"></i> Checkout</button>
+                </form>
+            </div>
         <% } else { %> 
             <h1> Nothing in your cart </h1>
         <% } %>
