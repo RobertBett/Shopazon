@@ -12,6 +12,7 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const User = require('./models/User');
 
 
 
@@ -21,14 +22,13 @@ app.use(bodyParser.urlencoded({ extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req,res,next)=>{
-    // User.findByPk(1)
-    // .then((user) => {
-    //    req.user = user;
-    //    next();
-    // }).catch((err) => {
-    //     console.log(err)
-    // });
-    next()
+    User.findById('5ec58dbd7f8becd48808480b')
+        .then((user) => {
+        req.user = new User(user);
+        next();
+        }).catch((err) => {
+            console.log(err)
+        });
 });
 
 app.use(adminRoutes);
@@ -38,9 +38,20 @@ app.use('/',get404Page);
 
 
 mongoConnect(()=>{
-    app.listen(port, () => {
-        console.log(chalk.green.bold(`On Port:${port}`))
-        console.log(chalk.green.bold.underline(`Running on http://localhost:${port}`))
+    User.findById('5ec58dbd7f8becd48808480b')
+    .then((user) => {
+        console.log(user, ['HOW SWAY'])
+        const newUser = new User('Roberto', 'test@test.com')
+        return !user && newUser.save()
+    })
+    .then((value) => {
+        app.listen(port, () => {
+            console.log(chalk.green.bold(`On Port:${port}`))
+            console.log(chalk.green.bold.underline(`Running on http://localhost:${port}`))
+        });
+    })
+    .catch((err) => {
+        console.error(err);
     });
 });
 

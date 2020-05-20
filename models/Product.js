@@ -1,32 +1,33 @@
 const { ObjectId } = require('mongodb');
 
-const getDb = require('../utils/database').getDb;
+const { getDb } = require('../utils/database');
 
 
 class Product {
-    constructor(title, price, imageUrl, description, id){
+    constructor(title, price, imageUrl, description, productId, userId){
         this.title = title;
         this.price = price;
         this.imageUrl = imageUrl,
         this.description = description;
-        this._id = id;
+        this._id = productId && ObjectId(productId);
+        this.userId = userId;
     }
 
     save(){
         const db = getDb();
-        let dbOp;
-        if(this._id){
-            dbOP = db.collection('products')
-                    .updateOne({_id: ObjectId(this._id)}, { $set: this });
-        }else{
-            dbOp = db.collection('products')
+        let dbOperation;
+
+        this._id ?
+            dbOperation = db.collection('products')
+                    .updateOne({ _id: this._id }, { $set: this })
+        :
+            dbOperation = db.collection('products')
                     .insertOne(this)
-        }
+
         
-        return dbOp
-            .then((result) => {
-                console.log(result);
-            }).catch((err) => {
+        return dbOperation
+            .then()
+            .catch((err) => {
                 console.error(err); 
             });
     };
@@ -41,13 +42,23 @@ class Product {
         });
     };
 
-    static findById(id){
+    static findById(productId){
         const db = getDb();
-        return db.collection('products').findOne({ _id: ObjectId(id) })
+        return db.collection('products').findOne({ _id: ObjectId(productId) })
         .then((product) => {
             return product
         }).catch((err) => {
             console.error(err);
+        });
+    };
+
+    static deleteById(productId){
+        const db = getDb();
+        return db.collection('products').deleteOne({ _id: ObjectId(productId)})
+        .then()
+        .catch((err) => {
+            console.error(err);
+            
         });
     }
 };

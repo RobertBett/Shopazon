@@ -35,10 +35,11 @@ exports.getProducts = (req,res, next)=>{
 
 exports.getProductDetail = (req,res,next) =>{
     const { productId } = req.params;
+    console.log(productId,[ 'I KNOW ITS YOU IMAGEURL'])
     Product.findById(productId)
     .then((product) => {
         res.render('shop/product-detail',{
-            product:product,
+            product,
             pageTitle:'Shop',
             path:`/product/${product._id}`,
             activeShop:true,
