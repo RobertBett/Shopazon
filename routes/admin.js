@@ -16,4 +16,4 @@ router.post('/admin/delete-product/:productId', postDeleteProduct)
 
 
 // exports.adminRoutes = router
-module.exports = router
+module.exports = router;

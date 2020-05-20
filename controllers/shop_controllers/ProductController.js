@@ -1,9 +1,8 @@
 const Product = require('../../models/Product');
 
 
-
 exports.getShop = (req,res, next)=>{
-    Product.findAll()
+    Product.fetchAll()
     .then((products) => {
         res.render('shop/index',{
             products,
@@ -14,13 +13,12 @@ exports.getShop = (req,res, next)=>{
             productCSS: true,
         });    
     }).catch((err) => {
-        console.log(err)
+        console.error(err)
     });
-
 };
 
 exports.getProducts = (req,res, next)=>{
-    Product.findAll()
+    Product.fetchAll()
     .then(products => {
         res.render('shop/product-list',{
             products,
@@ -37,18 +35,16 @@ exports.getProducts = (req,res, next)=>{
 
 exports.getProductDetail = (req,res,next) =>{
     const { productId } = req.params;
-    console.log(req.params, 'WHAT IS IN HERE!!!')
-    Product.findByPk(productId)
+    Product.findById(productId)
     .then((product) => {
-        console.log(product.id, 'WHAT COMES FIRST!!@####@!!!')
         res.render('shop/product-detail',{
             product:product,
             pageTitle:'Shop',
-            path:`/product/${product.id}`,
+            path:`/product/${product._id}`,
             activeShop:true,
             productCSS: true,
         })
     }).catch((err) => {
-        console.log(err)
+        console.error(err);
     });
 }

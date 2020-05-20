@@ -13,8 +13,8 @@ exports.getAddProduct =  (req, res, next)=>{
 exports.getEditProduct =  (req, res, next)=>{
     const {edit} = req.query
     const {productId} = req.params
-    req.user.getProducts({ where: { id : productId}})
-    .then(([product]) => {
+    Product.findById(productId)
+    .then((product) => {
         res.render('admin/add-edit-product', {
             pageTitle: 'Edit Product',
             path:`/admin/edit-product${productId}`,
@@ -28,8 +28,8 @@ exports.getEditProduct =  (req, res, next)=>{
 };
 
 exports.getAdminProducts = (req,res, next)=>{
-    req.user.getProducts()
-    .then((products) => {
+    Product.fetchAll()
+    .then(products => {
         res.render('admin/admin-product-list',{
             products,
             pageTitle:'Admin Products',
@@ -45,20 +45,14 @@ exports.getAdminProducts = (req,res, next)=>{
 };
 
 exports.postAddProduct = (req,res, next)=>{
-    const {title, price, imageUrl, description, user} = req.body;
-    const userId = req.user.id;
-    req.user.createProduct({
-        title,
-        price,
-        imageUrl,
-        description,
-        userId
-    })
+    const {title, price, imageUrl, description} = req.body;
+    const product = new Product(title, price, imageUrl, description)
+    product.save()
     .then((result) => {
         res.redirect('/');
     })
     .catch((err) => {
-        console.log(err)
+        console.log(err);
     });
 };
 
