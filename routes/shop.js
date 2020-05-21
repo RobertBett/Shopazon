@@ -6,7 +6,7 @@ const { getCheckout, getOrders, postOrder } = require('../controllers/shop_contr
 const {getProducts, getShop,getProductDetail} = require('../controllers/shop_controllers/ProductController');
 
 // router.get('/cart',getCart);
-// router.post('/add-to-cart/:productId',postCartItem);
+router.post('/add-to-cart/:productId',postCartItem);
 // router.get('/orders',getOrders);
 router.get('/products',getProducts);
 router.get('/product/:productId',getProductDetail);
