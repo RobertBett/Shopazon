@@ -30,7 +30,6 @@ class User {
             { _id: this.userId}, 
             { $set:{ cart:updatedCart } } 
         );
-
     }
 
     static findById(userId){
