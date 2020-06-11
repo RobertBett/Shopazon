@@ -5,7 +5,7 @@ const chalk = require('chalk');
 let _db;
 
 const mongoConnect = ( callback ) => {
-    MongoClient.connect('mongodb+srv://Roberto:YLnMlpXN9Oit61SB@cluster0-fezrg.mongodb.net/test?retryWrites=true&w=majority')
+    MongoClient.connect('mongodb+srv://robert:shopazon@cluster0-rdtzx.mongodb.net/Shop?retryWrites=true&w=majority')
         .then((client) => {
             console.log(chalk.green('Connection to MongoDB Successful!'))
             _db = client.db();

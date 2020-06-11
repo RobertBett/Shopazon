@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req,res,next)=>{
-    User.findById('5ed16618d0899766ea3cd4dc')
+    User.findById('5ee1222984fd090611b67bed')
         .then((user) => {
         req.user = new User(user.username, user.email,user.cart, user._id);
         next();
@@ -38,7 +38,7 @@ app.use('/',get404Page);
 
 
 mongoConnect(()=>{
-    User.findById('5ec58dbd7f8becd48808480b')
+    User.findById('5ee1222984fd090611b67bed')
     .then((user) => {
         console.log(user, ['HOW SWAY'])
         const newUser = new User('Roberto', 'test@test.com')

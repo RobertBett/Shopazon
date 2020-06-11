@@ -5,7 +5,7 @@ class User {
         this.username = username;
         this.email = email;
         this.cart = cart;
-        this.userId = userId && ObjectId(userId);
+        this.userId =  ObjectId(userId);
     }
 
     save(){
@@ -18,13 +18,25 @@ class User {
     }
 
     addToCart(product){
-        // const cartProduct = this.cart.items.findIndex( cartProduct => {
-        //     return cartProduct._id === product._id;
-        // });
+        let quantity = 1; 
+        const cartProductIndex = this.cart.items.findIndex(cartProduct => {
+            return cartProduct.productId.equals(product._id);
+        });
+        const updatedCartItems = [ ...this.cart.items];
+        console.log(updatedCartItems, 'WHATS THIS LOOK LIKE??')
+        if(cartProductIndex >= 0){
+           quantity = this.cart.items[cartProductIndex].quantity + 1 ;
+           updatedCartItems[cartProductIndex].quantity = quantity;
+        }
+        else{
+            updatedCartItems.push({ productId: new ObjectId(product._id), quantity});
+        }
+        
+        const updatedCart = { 
+            items: updatedCartItems
+        }; 
 
-        const updatedCart = { items: [{productId: ObjectId(product._id) ,quantity:1 }]};
         const db = getDb();
-
         return db.collection('user')
         .updateOne(
             { _id: this.userId}, 
