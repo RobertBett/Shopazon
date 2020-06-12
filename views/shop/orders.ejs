@@ -8,25 +8,25 @@
             <ul class="cart__item-list">
                 <% orders.forEach(order => { %>
                     <h1 class="centered"><%= order.id %></h1>
-                    <% order.products.forEach(product =>{ %>
+                    <% order.items.forEach(product =>{ %>
                         <li class="cart__item">
                             <div class="cart__image">
                                 <img src="<%= product.imageUrl %>" alt="A Book">
                             </div>
                             <span class="cart__title">
                                 <h1><%= product.title %> </h1>
-                                <form action="/cart-delete-one-item/<%= order.id %>" method="post">
+                                <form action="/cart-delete-one-item/<%= order._id %>" method="post">
                                     <button class="btn danger" type="submit"><i class="icon-minus"></i></button>
                                 </form> 
-                                ( <%= product.orderItem.quantity %> )
-                                <form action="/cart-add-one-item/<%= order.id %>" method="post">
+                                ( <%= product.quantity %> )
+                                <form action="/cart-add-one-item/<%= order._id %>" method="post">
                                     <button class="btn" type="submit"><i class="icon-plus"></i></button>
                                 </form>
                             </span>
                             <div class="cart__total">
-                                <p>Subtotal: $<%= product.orderItem.orderTotal %></p>
+                                <p>Subtotal: $<%= product.orderTotal %></p>
                             </div>
-                            <form action="/cart-delete-item/<%= order.id %>" method="post">
+                            <form action="/cart-delete-item/<%= order._id %>" method="post">
                                 <button class="btn danger" type="submit"><i class="icon-trash"></i> Remove</button>
                             </form>
                         </li>

@@ -16,15 +16,15 @@
                             <form action="/cart-delete-one-item/<%= product.id %>" method="post">
                                 <button class="btn danger" type="submit"><i class="icon-minus"></i></button>
                             </form> 
-                            ( <%= product.cartItem.quantity %> )
+                            ( <%= product.quantity %> )
                             <form action="/cart-add-one-item/<%= product.id %>" method="post">
                                 <button class="btn" type="submit"><i class="icon-plus"></i></button>
                             </form>
                         </span>
                         <div class="cart__total">
-                            <p>Subtotal: $<%= product.cartItem.price %></p>
+                            <p>Subtotal: $<%= product.price %></p>
                         </div>
-                        <form action="/cart-delete-item/<%= product.id %>" method="post">
+                        <form action="/cart-delete-item/<%= product._id %>" method="post">
                             <button class="btn danger" type="submit"><i class="icon-trash"></i> Remove</button>
                         </form>
                     </li>

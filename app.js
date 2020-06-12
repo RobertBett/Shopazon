@@ -13,7 +13,7 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const User = require('./models/User');
-
+const { getDb } = require('./utils/database');
 
 
 const port = 8080
@@ -22,11 +22,12 @@ app.use(bodyParser.urlencoded({ extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req,res,next)=>{
-    User.findById('5ee1222984fd090611b67bed')
+    User.findById('5ee2ed44b1b89c2549942daf')
         .then((user) => {
-        req.user = new User(user.username, user.email,user.cart, user._id);
-        next();
-        }).catch((err) => {
+            const newUser = new User(user.username, user.email,user.cart, user._id);
+            req.user = newUser
+            next()
+        }).catch((err) => { 
             console.log(err)
         });
 });
@@ -38,8 +39,17 @@ app.use('/',get404Page);
 
 
 mongoConnect(()=>{
-    User.findById('5ee1222984fd090611b67bed')
+    User.findById('5ee2ed44b1b89c2549942daf')
     .then((user) => {
+        if(user){
+            const { _id, username, email,cart} = user;
+            const db = getDb();
+            return db.collection('user')
+                .updateOne(
+                    { _id}, 
+                    { $set:{ username, email, cart, userId:user._id} } 
+                )
+        }
         console.log(user, ['HOW SWAY'])
         const newUser = new User('Roberto', 'test@test.com')
         return !user && newUser.save()

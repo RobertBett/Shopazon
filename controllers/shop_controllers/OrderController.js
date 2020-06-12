@@ -2,8 +2,9 @@
 
 
 exports.getOrders = (req,res, next) =>{
-    req.user.getOrders({ include:['products']})
+    req.user.getOrders()
     .then((orders) => {
+        console.log(orders, ['THIS SHPULD HAVE ORDERS'])
         res.render('shop/orders', {
         pageTitle: 'orders',
         orders,
@@ -31,33 +32,10 @@ exports.getCheckout = (req,res, next) =>{
 
 exports.postOrder = (req, res, next) =>{
     let fetchedCart;
-    req.user.getCart({ where: { userId: req.user.id}})
-    .then((cart) => {
-        fetchedCart = cart;
-        return cart.getProducts()
-    })
-    .then((products) => {
-        req.user.createOrder()
-        .then((order) => {
-            return order.addProducts(
-                products.map( product =>{
-                    product.orderItem = { 
-                        quantity: product.cartItem.quantity,
-                        orderTotal: product.price * product.cartItem.quantity
-                    };
-                    return product;
-            }));
-        }).catch((err) => {
-            console.error(err);
-        });
-    })
-    .then(() => {
-        return fetchedCart.setProducts(null)
-    })
+    req.user.addOrder()
     .then((result) => {
         res.redirect('/orders')
-    })
-    .catch((err) => {
-        console.error(err);
+    }).catch((err) => {
+        console.error(err); 
     });
 }
