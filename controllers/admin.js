@@ -45,9 +45,13 @@ exports.getAdminProducts = (req,res, next)=>{
 
 exports.postAddProduct = (req,res, next)=>{
     const {title, price, imageUrl, description} = req.body;
-    const { userId } = req.user;
     console.log(req.user, ['THIS IS NOT GETTING SAVED??'])
-    const product = new Product(title, price, imageUrl, description, null, userId)
+    const product = new Product({
+        title, 
+        price, 
+        imageUrl, 
+        description
+    })
 
     product.save()
     .then((result) => {
@@ -61,8 +65,12 @@ exports.postAddProduct = (req,res, next)=>{
 exports.postEditProduct = (req, res, next) =>{
     const {productId} = req.params;
     const { title, price, imageUrl, description } = req.body;
-    const { userId } = req.user;
-    const newProduct = new Product(title, price, imageUrl, description, productId, userId)
+    const newProduct = new Product({
+        title, 
+        price, 
+        imageUrl, 
+        description
+    })
     newProduct.save()
     .then(() => {
         res.redirect('/admin/products')
