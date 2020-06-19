@@ -22,16 +22,15 @@ const port = 8080
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use((req,res,next)=>{
-//     User.findById('5ee2ed44b1b89c2549942daf')
-//         .then((user) => {
-//             const newUser = new User(user.username, user.email,user.cart, user._id);
-//             req.user = newUser
-//             next()
-//         }).catch((err) => { 
-//             console.log(err)
-//         });
-// });
+app.use((req,res,next)=>{
+    User.findById('5eebc5130e17fe60690e87f9')
+        .then((user) => {
+            req.user = user;
+            next()
+        }).catch((err) => { 
+            console.log(err)
+        });
+});
 
 app.use(adminRoutes);
 app.use(shopRoutes);
@@ -65,12 +64,30 @@ app.use('/',get404Page);
 //     });
 // });
 
-mongoose.connect('mongodb+srv://robert:shopazon@cluster0-rdtzx.mongodb.net/Shop?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://robert:shopazon@cluster0-rdtzx.mongodb.net/Shop?retryWrites=true&w=majority', { useFindAndModify: false })
 .then((result) => {
-    app.listen(port, () => {
-        console.log(chalk.green.bold(`On Port:${port}`))
-        console.log(chalk.green.bold.underline(`Running on http://localhost:${port}`))
+    User.findById('5eebc5130e17fe60690e87f9')
+    .then((user) => {
+       const newUser = new User({
+            userName:'Robertoo',
+            email: 'roberto@test.come',
+            cart:{
+                items:[]
+            }
+        })
+        !user && newUser.save();
+    })
+    .then(() => {
+        app.listen(port, () => {
+            console.log(chalk.green.bold(`On Port:${port}`))
+            console.log(chalk.green.bold.underline(`Running on http://localhost:${port}`))
+        }); 
+    })
+    .catch((err) => { 
+        console.log(err)
     });
+    
+
 }).catch((err) => {
     console.error(err);
 });

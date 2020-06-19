@@ -9,22 +9,22 @@
                 <% products.forEach(product => { %>
                     <li class="cart__item">
                         <div class="cart__image">
-                            <img src="<%= product.imageUrl %>" alt="A Book">
+                            <img src="<%= product.productId.imageUrl %>" alt=" <%= product.productId.title %> ">
                         </div>
                         <span class="cart__title">
-                            <h1><%= product.title %> </h1>
-                            <form action="/cart-delete-one-item/<%= product.id %>" method="post">
+                            <h1><%= product.productId.title %> </h1>
+                            <form action="/cart-delete-one-item/<%= product.productId._id %>" method="post">
                                 <button class="btn danger" type="submit"><i class="icon-minus"></i></button>
                             </form> 
                             ( <%= product.quantity %> )
-                            <form action="/cart-add-one-item/<%= product.id %>" method="post">
+                            <form action="/cart-add-one-item/<%= product.productId._id %>" method="post">
                                 <button class="btn" type="submit"><i class="icon-plus"></i></button>
                             </form>
                         </span>
                         <div class="cart__total">
-                            <p>Subtotal: $<%= product.price %></p>
+                            <p>Subtotal: $<%= product.productId.price %></p>
                         </div>
-                        <form action="/cart-delete-item/<%= product._id %>" method="post">
+                        <form action="/cart-delete-item/<%= product.productId._id %>" method="post">
                             <button class="btn danger" type="submit"><i class="icon-trash"></i> Remove</button>
                         </form>
                     </li>

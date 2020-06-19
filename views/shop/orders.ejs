@@ -8,13 +8,13 @@
             <ul class="cart__item-list">
                 <% orders.forEach(order => { %>
                     <h1 class="centered"><%= order.id %></h1>
-                    <% order.items.forEach(product =>{ %>
+                    <% order.products.forEach(product =>{ %>
                         <li class="cart__item">
                             <div class="cart__image">
-                                <img src="<%= product.imageUrl %>" alt="A Book">
+                                <img src="<%= product.productData.imageUrl %>" alt="A Book">
                             </div>
                             <span class="cart__title">
-                                <h1><%= product.title %> </h1>
+                                <h1><%= product.productData.title %> </h1>
                                 <form action="/cart-delete-one-item/<%= order._id %>" method="post">
                                     <button class="btn danger" type="submit"><i class="icon-minus"></i></button>
                                 </form> 

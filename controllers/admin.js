@@ -27,7 +27,7 @@ exports.getEditProduct =  (req, res, next)=>{
 };
 
 exports.getAdminProducts = (req,res, next)=>{
-    Product.fetchAll()
+    Product.find()
     .then(products => {
         res.render('admin/admin-product-list',{
             products,
@@ -45,14 +45,15 @@ exports.getAdminProducts = (req,res, next)=>{
 
 exports.postAddProduct = (req,res, next)=>{
     const {title, price, imageUrl, description} = req.body;
+    const userId = req.user._id;
     console.log(req.user, ['THIS IS NOT GETTING SAVED??'])
     const product = new Product({
         title, 
         price, 
         imageUrl, 
-        description
+        description,
+        userId
     })
-
     product.save()
     .then((result) => {
         res.redirect('/');
@@ -65,39 +66,27 @@ exports.postAddProduct = (req,res, next)=>{
 exports.postEditProduct = (req, res, next) =>{
     const {productId} = req.params;
     const { title, price, imageUrl, description } = req.body;
-    const newProduct = new Product({
+    const userId = req.user._id;
+    Product.findByIdAndUpdate( productId, {       
         title, 
         price, 
         imageUrl, 
-        description
+        description,
+        userId,
     })
-    newProduct.save()
     .then(() => {
         res.redirect('/admin/products')
     }).catch((err) => {
-       console.error(err);
-       
+       console.error(err); 
     });
-
-    // req.user.getCart({ where:{ userId: req.user.id}})
-    // .then((cart) => {
-
-    // })
-    // .then(([product]) => {
-    //     return product && CartItem.update(
-    //         { price:price * product.cartItem.quantity }  
-    //         ,{ where:{ productId }}
-    //     ) 
-    // })
-
 };
 
 exports.postDeleteProduct = (req, res, next) =>{
     const { productId } = req.params;
-    Product.deleteById(productId)
+    Product.findByIdAndDelete(productId)
     .then(() => {
         res.redirect('/admin/products');
     }).catch((err) => {
-        console.log(err)
+        console.log(err);
     });
 };

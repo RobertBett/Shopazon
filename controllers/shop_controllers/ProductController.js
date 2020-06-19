@@ -2,7 +2,7 @@ const Product = require('../../models/Product');
 
 
 exports.getShop = (req,res, next)=>{
-    Product.fetchAll()
+    Product.find()
     .then((products) => {
         res.render('shop/index',{
             products,
@@ -18,8 +18,10 @@ exports.getShop = (req,res, next)=>{
 };
 
 exports.getProducts = (req,res, next)=>{
-    Product.fetchAll()
+    Product.find()
+    // .populate('userId')
     .then(products => {
+        console.log(products)
         res.render('shop/product-list',{
             products,
             pageTitle:'Shop',
@@ -35,7 +37,6 @@ exports.getProducts = (req,res, next)=>{
 
 exports.getProductDetail = (req,res,next) =>{
     const { productId } = req.params;
-    console.log(productId,[ 'I KNOW ITS YOU IMAGEURL'])
     Product.findById(productId)
     .then((product) => {
         res.render('shop/product-detail',{
