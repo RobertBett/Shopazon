@@ -2,15 +2,17 @@ const Product = require('../models/Product');
 
 
 exports.getAddProduct =  (req, res, next)=>{
+    const isLoggedIn = req.session && req.session.isLoggedIn
     res.render('admin/add-edit-product', {
             pageTitle: 'Add Product',
             path:'/admin/add-product',
             edit: false,
-            isLoggedIn: req.isLoggedIn
+            isLoggedIn
         });
 };
 
 exports.getEditProduct =  (req, res, next)=>{
+    const isLoggedIn = req.session && req.session.isLoggedIn
     const {edit} = req.query
     const {productId} = req.params
     Product.findById(productId)
@@ -18,7 +20,7 @@ exports.getEditProduct =  (req, res, next)=>{
         res.render('admin/add-edit-product', {
             pageTitle: 'Edit Product',
             path:`/admin/edit-product${productId}`,
-            isLoggedIn: req.isLoggedIn,
+            isLoggedIn,
             product,
             edit,
         });  
@@ -29,6 +31,7 @@ exports.getEditProduct =  (req, res, next)=>{
 };
 
 exports.getAdminProducts = (req,res, next)=>{
+    const isLoggedIn = req.session && req.session.isLoggedIn
     Product.find()
     .then(products => {
         res.render('admin/admin-product-list',{
@@ -38,7 +41,7 @@ exports.getAdminProducts = (req,res, next)=>{
             hasProducts: products.length > 0,
             activeShop:true,
             productCSS: true,
-            isLoggedIn: req.isLoggedIn
+            isLoggedIn
         });
     }).catch((err) => {
         console.log(err);
@@ -49,7 +52,6 @@ exports.getAdminProducts = (req,res, next)=>{
 exports.postAddProduct = (req,res, next)=>{
     const {title, price, imageUrl, description} = req.body;
     const userId = req.user._id;
-    console.log(req.user, ['THIS IS NOT GETTING SAVED??'])
     const product = new Product({
         title, 
         price, 

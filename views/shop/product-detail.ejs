@@ -15,11 +15,13 @@
                     <h2 class="product__price">$<%= product.price %></h2>
                     <p class="product__description"><%= product.description %></p>
                 </div>
+                <% if(isLoggedIn){ %>
                 <div class="card__actions">
                     <form action="/add-to-cart/<%= product.id %>" method="post">
                         <button class="btn">Add to Cart</button>
                     </form>
                 </div>
+                <% } %>
         </div>
     <% } else { %>
         <h1> No products found 😭 </h1>

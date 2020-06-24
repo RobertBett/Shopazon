@@ -6,8 +6,15 @@ const { get404Page } = require('./controllers/errors');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 // const { mongoConnect } = require('./utils/database');
+const uri = 'mongodb+srv://robert:shopazon@cluster0-rdtzx.mongodb.net/Shop?retryWrites=true&w=majority';
+const store = new MongoDBStore({
+    uri,
+    collection: 'sessions',
+    
+});
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -25,12 +32,16 @@ app.use(bodyParser.urlencoded({ extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
     session({ 
-        secret: 'my secret', resave: false, saveUninitialized: false 
+        secret: 'my secret', 
+        resave: false, 
+        saveUninitialized: false,
+        store 
     })
 );
 
 app.use((req,res,next)=>{
-    User.findById('5eebc5130e17fe60690e87f9')
+    const UserId = req.session.user && req.session.user._id
+    User.findById(UserId)
         .then((user) => {
             req.user = user;
             next()
@@ -72,7 +83,7 @@ app.use('/',get404Page);
 //     });
 // });
 
-mongoose.connect('mongodb+srv://robert:shopazon@cluster0-rdtzx.mongodb.net/Shop?retryWrites=true&w=majority', { useFindAndModify: false })
+mongoose.connect(uri, { useFindAndModify: false })
 .then((result) => {
     User.findById('5eebc5130e17fe60690e87f9')
     .then((user) => {

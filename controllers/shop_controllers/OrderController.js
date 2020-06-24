@@ -3,9 +3,9 @@ const Order = require("../../models/Order");
 
 
 exports.getOrders = (req,res, next) =>{
+    const isLoggedIn = req.session && req.session.isLoggedIn
     Order.find({ 'user.userId': req.user._id})
     .then( orders => {
-        console.log(orders, ['THIS SHPULD HAVE ORDERS'])
         res.render('shop/orders', {
             pageTitle: 'orders',
             orders,
@@ -13,7 +13,7 @@ exports.getOrders = (req,res, next) =>{
             formsCSS: true,
             productCSS: true,
             activeAddProduct: true,
-            isLoggedIn: req.isLoggedIn
+            isLoggedIn
         });
     })
     .catch( err => {
@@ -22,13 +22,14 @@ exports.getOrders = (req,res, next) =>{
 };
 
 exports.getCheckout = (req,res, next) =>{
+    const isLoggedIn = req.session && req.session.isLoggedIn
     res.render('shop/Checkout', {
         pageTitle: 'Checkout',
         path:'/checkout',
         formsCSS: true,
         productCSS: true,
         activeAddProduct: true,
-        isLoggedIn: req.isLoggedIn
+        isLoggedIn
     });
 };
 

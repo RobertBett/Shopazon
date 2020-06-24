@@ -206,7 +206,13 @@ form {
   border-radius: 3px;
   cursor: pointer;
 }
-
+.btn.clean{
+  border: none;
+  outline: none;
+  background-color: #00695c;
+  color: white;
+  padding: 0;
+}
 .btn:hover,
 .btn:active {
   background-color: #00695c;
