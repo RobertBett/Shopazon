@@ -7,7 +7,7 @@
         <% if (orders.length > 0){ %>
             <ul class="cart__item-list">
                 <% orders.forEach(order => { %>
-                    <h1 class="centered"><%= order.id %></h1>
+                    <h1 class="centered"><%= order._id %></h1>
                     <% order.products.forEach(product =>{ %>
                         <li class="cart__item">
                             <div class="cart__image">

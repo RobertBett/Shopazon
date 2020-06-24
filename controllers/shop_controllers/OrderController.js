@@ -4,21 +4,21 @@ const Order = require("../../models/Order");
 
 exports.getOrders = (req,res, next) =>{
     Order.find({ 'user.userId': req.user._id})
-    .then((orders) => {
+    .then( orders => {
         console.log(orders, ['THIS SHPULD HAVE ORDERS'])
         res.render('shop/orders', {
-        pageTitle: 'orders',
-        orders,
-        path:'/orders',
-        formsCSS: true,
-        productCSS: true,
-        activeAddProduct: true
-    });
+            pageTitle: 'orders',
+            orders,
+            path:'/orders',
+            formsCSS: true,
+            productCSS: true,
+            activeAddProduct: true,
+            isLoggedIn: req.isLoggedIn
+        });
     })
-    .catch((err) => {
+    .catch( err => {
         console.error(err);
     });
-
 };
 
 exports.getCheckout = (req,res, next) =>{
@@ -27,14 +27,15 @@ exports.getCheckout = (req,res, next) =>{
         path:'/checkout',
         formsCSS: true,
         productCSS: true,
-        activeAddProduct: true
+        activeAddProduct: true,
+        isLoggedIn: req.isLoggedIn
     });
 };
 
 exports.postOrder = (req, res, next) =>{
     req.user.populate('cart.items.productId')
     .execPopulate()
-    .then(( user) => {
+    .then(user => {
         const products = user.cart.items.map((i) => {
             console.log(i.productId._doc)
             return { productData:{ ...i.productId._doc }, quantity: i.quantity}
@@ -49,9 +50,9 @@ exports.postOrder = (req, res, next) =>{
         });
         newOrder.save();
     })
-    .then((result) => {
+    .then(() => {
         req.user.clearCart();
-        res.redirect('/orders')
+        res.redirect('/orders');
     }).catch((err) => {
         console.error(err); 
     });

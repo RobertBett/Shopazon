@@ -12,7 +12,8 @@ exports.getCart = (req,res, next) =>{
                 path:'/cart',
                 formsCSS: true,
                 productCSS: true,
-                activeAddProduct: true
+                activeAddProduct: true,
+                isLoggedIn: req.isLoggedIn
             });
         })
         .catch((err) => {

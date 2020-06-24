@@ -2,6 +2,7 @@ const Product = require('../../models/Product');
 
 
 exports.getShop = (req,res, next)=>{
+    console.log(req.isLoggedIn, ['DFHWEVHVFWE'])
     Product.find()
     .then((products) => {
         res.render('shop/index',{
@@ -11,6 +12,7 @@ exports.getShop = (req,res, next)=>{
             hasProducts: products.length > 0,
             activeShop:true,
             productCSS: true,
+            isLoggedIn: req.isLoggedIn,
         });    
     }).catch((err) => {
         console.error(err)
@@ -19,7 +21,6 @@ exports.getShop = (req,res, next)=>{
 
 exports.getProducts = (req,res, next)=>{
     Product.find()
-    // .populate('userId')
     .then(products => {
         console.log(products)
         res.render('shop/product-list',{
@@ -29,6 +30,7 @@ exports.getProducts = (req,res, next)=>{
             hasProducts: products.length > 0,
             activeShop:true,
             productCSS: true,
+            isLoggedIn: req.isLoggedIn,
         });
     }).catch((err) => {
         console.log(err)
@@ -45,6 +47,7 @@ exports.getProductDetail = (req,res,next) =>{
             path:`/product/${product._id}`,
             activeShop:true,
             productCSS: true,
+            isLoggedIn: req.isLoggedIn,
         })
     }).catch((err) => {
         console.error(err);

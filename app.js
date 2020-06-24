@@ -5,6 +5,7 @@ const app = express();
 const { get404Page } = require('./controllers/errors');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 // const { mongoConnect } = require('./utils/database');
 
@@ -13,6 +14,7 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 const User = require('./models/User');
 // const { getDb } = require('./utils/database');
 
@@ -21,6 +23,11 @@ const port = 8080
 
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+    session({ 
+        secret: 'my secret', resave: false, saveUninitialized: false 
+    })
+);
 
 app.use((req,res,next)=>{
     User.findById('5eebc5130e17fe60690e87f9')
@@ -34,6 +41,7 @@ app.use((req,res,next)=>{
 
 app.use(adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 app.use('/',get404Page); 
 
 
