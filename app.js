@@ -85,28 +85,10 @@ app.use('/',get404Page);
 
 mongoose.connect(uri, { useFindAndModify: false })
 .then((result) => {
-    User.findById('5eebc5130e17fe60690e87f9')
-    .then((user) => {
-       const newUser = new User({
-            userName:'Robertoo',
-            email: 'roberto@test.come',
-            cart:{
-                items:[]
-            }
-        })
-        !user && newUser.save();
-    })
-    .then(() => {
-        app.listen(port, () => {
-            console.log(chalk.green.bold(`On Port:${port}`))
-            console.log(chalk.green.bold.underline(`Running on http://localhost:${port}`))
-        }); 
-    })
-    .catch((err) => { 
-        console.log(err)
-    });
-    
-
+    app.listen(port, () => {
+        console.log(chalk.green.bold(`On Port:${port}`))
+        console.log(chalk.green.bold.underline(`Running on http://localhost:${port}`))
+    }); 
 }).catch((err) => {
     console.error(err);
 });

@@ -1,7 +1,5 @@
 const Order = require("../../models/Order");
 
-
-
 exports.getOrders = (req,res, next) =>{
     const isLoggedIn = req.session && req.session.isLoggedIn
     Order.find({ 'user.userId': req.user._id})
@@ -57,4 +55,4 @@ exports.postOrder = (req, res, next) =>{
     }).catch((err) => {
         console.error(err); 
     });
-}
+};
