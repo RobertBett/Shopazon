@@ -2,26 +2,25 @@ const User = require("../models/User");
 const bcrypt = require('bcryptjs')
 
 exports.getLogin = (req,res, next) =>{
-    const isLoggedIn = req.session && req.session.isLoggedIn
+        const valError = req.flash('error').length > 0 ? req.flash('error')[0] : false
+        console.log(req.flash('error')[0] , 'WHATS REALLY IN HERE??')
         res.render('auth/login', {
             pageTitle: 'Login',
             path:'/login',
             formsCSS: true,
             productCSS: true,
             activeAddProduct: true,
-            isLoggedIn
+            errorMessage: valError
         });
 };
 
 exports.getSignup = (req,res, next) =>{
-    const isLoggedIn = req.session && req.session.isLoggedIn
         res.render('auth/signup', {
             pageTitle: 'signup',
             path:'/signup',
             formsCSS: true,
             productCSS: true,
             activeAddProduct: true,
-            isLoggedIn
         });
 };
 
@@ -30,6 +29,7 @@ exports.postLogin = (req,res, next) =>{
     User.findOne({ email })
     .then((user) => {
         if(!user){
+            req.flash('error', 'invalid email or password');
             return res.redirect('/login');
         }
         bcrypt.compare(password, user.password)
@@ -37,11 +37,14 @@ exports.postLogin = (req,res, next) =>{
             if(match){
                 req.session.user = user;
                 req.session.isLoggedIn = true;
-                req.session.save((err) => {
+                return req.session.save((err) => {
                     console.error(err);
-                    return res.redirect('/')
+                    res.redirect('/')
                 })
             }
+            req.flash('error', 'invalid email or password');
+            console.log('WRONG PASSWORD!');
+            return res.redirect('/login')
         }).catch((err) => {
             console.error(err)
             return res.redirect('/login')
@@ -56,7 +59,7 @@ exports.postSignup = (req,res, next) =>{
     User.findOne({ email })
     .then((result) => {
         if(result) return res.redirect('/signup');
-
+        
         return bcrypt.hash(password, 12)
         .then((hashedPassword) => {
             const user = new User({

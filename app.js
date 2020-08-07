@@ -6,7 +6,11 @@ const { get404Page } = require('./controllers/errors');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const csrf = require('csurf');
+const flash = require('connect-flash')
 const MongoDBStore = require('connect-mongodb-session')(session);
+
+const csrfProtection = csrf();
 
 // const { mongoConnect } = require('./utils/database');
 const uri = 'mongodb+srv://robert:shopazon@cluster0-rdtzx.mongodb.net/Shop?retryWrites=true&w=majority';
@@ -38,7 +42,7 @@ app.use(
         store 
     })
 );
-
+app.use(csrfProtection);
 app.use((req,res,next)=>{
     const UserId = req.session.user && req.session.user._id
     User.findById(UserId)
@@ -49,6 +53,13 @@ app.use((req,res,next)=>{
             console.log(err)
         });
 });
+
+app.use(( req, res, next) =>{
+    res.locals.isLoggedIn = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+})
+app.use(flash());
 
 app.use(adminRoutes);
 app.use(shopRoutes);

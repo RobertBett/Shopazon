@@ -27,6 +27,7 @@
                                 <p>Subtotal: $<%= product.orderTotal %></p>
                             </div>
                             <form action="/cart-delete-item/<%= order._id %>" method="post">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <button class="btn danger" type="submit"><i class="icon-trash"></i> Remove</button>
                             </form>
                         </li>
@@ -35,6 +36,7 @@
             </ul>
             <div class="centered">
                 <form action="/create-order" method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="btn" type="submit"><i class="icon-shopping-cart"></i> Place your Order</button>
                 </form>
             </div>

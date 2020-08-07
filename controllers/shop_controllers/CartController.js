@@ -2,7 +2,6 @@
 const Product = require('../../models/Product');
 
 exports.getCart = (req,res, next) =>{
-    const isLoggedIn = req.session && req.session.isLoggedIn
     req.user.populate('cart.items.productId')
         .execPopulate()
         .then(( user) => {
@@ -14,7 +13,6 @@ exports.getCart = (req,res, next) =>{
                 formsCSS: true,
                 productCSS: true,
                 activeAddProduct: true,
-                isLoggedIn
             });
         })
         .catch((err) => {
