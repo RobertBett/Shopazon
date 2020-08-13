@@ -27,7 +27,7 @@ exports.getEditProduct =  (req, res, next)=>{
 };
 
 exports.getAdminProducts = (req,res, next)=>{
-    Product.find()
+    Product.find({ userId: req.user._id})
     .then(products => {
         res.render('admin/admin-product-list',{
             products,
@@ -66,7 +66,7 @@ exports.postEditProduct = (req, res, next) =>{
     const {productId} = req.params;
     const { title, price, imageUrl, description } = req.body;
     const userId = req.user._id;
-    Product.findByIdAndUpdate( productId, {       
+    Product.updateOne( {_id:productId, userId},{       
         title, 
         price, 
         imageUrl, 
@@ -82,7 +82,7 @@ exports.postEditProduct = (req, res, next) =>{
 
 exports.postDeleteProduct = (req, res, next) =>{
     const { productId } = req.params;
-    Product.findByIdAndDelete(productId)
+    Product.deleteOne({_id:productId, userId:req.user._id})
     .then(() => {
         res.redirect('/admin/products');
     }).catch((err) => {

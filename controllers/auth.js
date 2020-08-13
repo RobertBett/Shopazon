@@ -143,7 +143,59 @@ exports.postReset = (req, res, next) =>{
         }).catch((err) => {
             console.error(err);
         });
+    });
+};
+
+exports.getNewPassword = ( req, res, next) =>{
+    const { token } = req.params;
+    User.findOne({resetToken:token, resetTokenExpiration:{ $gt: Date.now()}})
+    .then((user) => {
+        res.render('auth/new-password', {
+            pageTitle: 'Set New Password',
+            path:'/new-password',
+            formsCSS: true,
+            productCSS: true,
+            activeAddProduct: true,
+            errorMessage: req.flash('error'),
+            userId: user._id.toString(),
+            passwordToken: token
+        });  
+    }).catch((err) => {
+        console.error(err);
+    });
+};
+
+exports.postNewPassword = (req, res, next ) =>{
+    const {userId, newPassword, passwordToken } = req.body;
+    let userName;
+    let newUser;
+    User.findOne({resetToken:passwordToken, 
+        resetTokenExpiration:{ $gt: Date.now()},
+        _id: userId
+    }).then((user) => {
+        userName = user.userName
+        newUser = user
+        return bcrypt.hash(newPassword, 12)
+
+    }).then((hashedPassword) => {
+        newUser.password = hashedPassword;
+        newUser.resetToken = undefined;
+        newUser.resetTokenExpiration = undefined;
+        return newUser.save(); 
     })
+    .then(() => { 
+        res.redirect('/login') 
+        return transporter.sendMail({
+            to: newUser.email,
+            from: 'robertbett6@gmail.com',
+            subject: 'Password Reset',
+            html:`<h1> Hi ${userName} </h1>
+                <h3>You have successfully reset your password </h3>`
+        })
+    }).catch((err) => {
+        console.error(err);
+    });
+
 }
 
 exports.postLogout = (req,res, next) =>{
