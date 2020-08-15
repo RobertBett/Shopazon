@@ -8,13 +8,16 @@
 
     <main>
         <form class="login-form" action="/signup" method="POST">
+            <% if(errorMessage) { %>
+                <p class="user-message user-message--error"><%= errorMessage %></p>
+            <% } %>
             <div class="form-control">
                 <label for="email">E-Mail</label>
-                <input type="email" name="email" id="email">
+                <input type="email" name="email" id="email" value='<%= oldInput.email %>'>
             </div>
             <div class="form-control">
                 <label for="userName">User Name </label>
-                <input type="name" name="userName" id="userName">
+                <input type="name" name="userName" id="userName" value='<%= oldInput.userName %>'>
             </div>
             <div class="form-control">
                 <label for="password">Password</label>

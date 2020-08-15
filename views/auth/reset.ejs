@@ -13,7 +13,7 @@
             <% } %>
             <div class="form-control">
                 <label for="email">email</label>
-                <input type="email" name="email" id="email">
+                <input type="email" name="email" id="email" value='<%= oldInput.email %>'>
             </div>
             <input type="hidden" name="_csrf" value="<%=csrfToken%>">
             <button class="btn" type="submit">Reset Password</button>

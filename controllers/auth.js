@@ -2,6 +2,7 @@ const User = require("../models/User");
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
+const { validationResult } = require('express-validator/check');
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 
 const transporter = nodemailer.createTransport(sendgridTransport({
@@ -17,7 +18,8 @@ exports.getLogin = (req,res, next) =>{
             formsCSS: true,
             productCSS: true,
             activeAddProduct: true,
-            errorMessage: req.flash('errorMessage')
+            oldInput:{},
+            errorMessage: null
         });
 };
 
@@ -28,18 +30,28 @@ exports.getSignup = (req,res, next) =>{
             formsCSS: true,
             productCSS: true,
             activeAddProduct: true,
+            oldInput:{},
+            errorMessage: null
         });
 };
 
 exports.postLogin = (req,res, next) =>{
     const {email, password } = req.body;
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).render('auth/login', {
+            pageTitle: 'Login',
+            path:'/login',
+            formsCSS: true,
+            productCSS: true,
+            activeAddProduct: true,
+            oldInput:{email},
+            errorMessage: errors.array()[0].msg
+        });
+    }
     User.findOne({ email })
     .then((user) => {
-        if(!user){
-            console.log(req.flash('error'))
-            req.flash('errorMessage', 'invalid email ');
-            return res.redirect('/login');
-        }
+        console.log(password)
         bcrypt.compare(password, user.password)
         .then((match) => {
             if(match){
@@ -50,25 +62,31 @@ exports.postLogin = (req,res, next) =>{
                     res.redirect('/')
                 })
             }
-            req.flash('errorMessage', 'invalid password');
-            console.log('WRONG PASSWORD!');
-            return res.redirect('/login')
+            throw new Error()
         }).catch((err) => {
             console.error(err)
             return res.redirect('/login')
         });
     }).catch((err) => { 
-        console.log(err)
+        console.error(err);
     });
 };
 
 exports.postSignup = (req,res, next) =>{
    const {email, userName, password, confirmPassword } = req.body;
-    User.findOne({ email })
-    .then((result) => {
-        if(result) return res.redirect('/signup');
-        
-        return bcrypt.hash(password, 12)
+   const errors = validationResult(req);
+   if(!errors.isEmpty()){
+       return res.status(422).render('auth/signup', {
+        pageTitle: 'signup',
+        path:'/signup',
+        formsCSS: true,
+        productCSS: true,
+        activeAddProduct: true,
+        oldInput:{email, userName},
+        errorMessage: errors.array()[0].msg
+    });
+   }
+    bcrypt.hash(password, 12)
         .then((hashedPassword) => {
             const user = new User({
                 userName,
@@ -76,7 +94,7 @@ exports.postSignup = (req,res, next) =>{
                 password: hashedPassword,
                 cart: { items:[] }
             })
-            return user.save(); 
+            return user.save();
         })
         .then(() => { 
             res.redirect('/login') 
@@ -91,19 +109,18 @@ exports.postSignup = (req,res, next) =>{
         }).catch((err) => {
             console.error(err);
         });
-    })
-    .catch((err) => {
-        console.error(err);
-    });
 };
 
 exports.getReset = (req,res, next) =>{
+    const {email} = req.params;
+    console.log(email,'THIS SHOULD BE AN EMAIL')
     res.render('auth/reset', {
         pageTitle: 'Reset Password',
         path:'/reset',
         formsCSS: true,
         productCSS: true,
         activeAddProduct: true,
+        oldInput:{email},
         errorMessage: req.flash('error')
     });
 }
