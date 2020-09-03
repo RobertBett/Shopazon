@@ -14,6 +14,9 @@ exports.getOrders = (req,res, next) =>{
     })
     .catch( err => {
         console.error(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     });
 };
 
@@ -35,7 +38,6 @@ exports.postOrder = (req, res, next) =>{
             console.log(i.productId._doc)
             return { productData:{ ...i.productId._doc }, quantity: i.quantity}
         });
-        console.log(products)
         const newOrder = new Order({
             user:{
                 userName: req.user.userName,
@@ -49,6 +51,9 @@ exports.postOrder = (req, res, next) =>{
         req.user.clearCart();
         res.redirect('/orders');
     }).catch((err) => {
-        console.error(err); 
+        console.error(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     });
 };

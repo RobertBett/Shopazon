@@ -15,7 +15,7 @@ const validations = {
             .then((result) => {
                 if(!result) return Promise.reject('An account with that email does not exist try signing in!');
             })
-        }),
+        }).normalizeEmail(),
         body('password',
         'Please enter a valid Password'
         ).isLength({ min: 5 }).isAlphanumeric()
@@ -29,23 +29,24 @@ const validations = {
             .then((result) => {
                 if(result) return Promise.reject('Email Already Exists Try Signing in!');
             })
-        }),
+        }).normalizeEmail(),
         body('password',
         'Please enter a valid Password'
         ).isLength({ min: 5 }).isAlphanumeric(),
         body('confirmPassword')
         .custom((value, { req }) =>{
+            console.log(req.body.password, value != req.body.password);
             if(value != req.body.password){
-                return new Error('Passwords do not match!')
+                return Promise.reject('Passwords do not match!')
             }
-            return true;
+            return true
         })
     ]
 }
 
 router.get('/login', getLogin);
 router.get('/signup', getSignup);
-router.get('/reset/:email', getReset);
+router.get('/reset-password/:email', getReset);
 router.get('/reset/:token', getNewPassword);
 router.post('/new-password', postNewPassword);
 router.post('/reset', postReset);

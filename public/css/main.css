@@ -238,6 +238,11 @@ form {
   border-radius: 3px;
   color:rgb(171 0 27);
 }
+.form-control input.invalid, 
+.form-control textarea.invalid{
+  border: 1px solid rgb(255 0 41);
+  border-color: rgb(255 0 41);
+}
 
 .user-message--error{
   border-color: rgb(255 0 41);

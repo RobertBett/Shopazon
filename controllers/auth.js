@@ -19,7 +19,8 @@ exports.getLogin = (req,res, next) =>{
             productCSS: true,
             activeAddProduct: true,
             oldInput:{},
-            errorMessage: null
+            errorMessage: null,
+            validationErrors:[]
         });
 };
 
@@ -31,7 +32,8 @@ exports.getSignup = (req,res, next) =>{
             productCSS: true,
             activeAddProduct: true,
             oldInput:{},
-            errorMessage: null
+            errorMessage: null,
+            validationErrors:[]
         });
 };
 
@@ -45,8 +47,9 @@ exports.postLogin = (req,res, next) =>{
             formsCSS: true,
             productCSS: true,
             activeAddProduct: true,
-            oldInput:{email},
-            errorMessage: errors.array()[0].msg
+            oldInput:{email, password},
+            errorMessage: errors.array()[0].msg,
+            validationErrors: errors.array()
         });
     }
     User.findOne({ email })
@@ -69,12 +72,16 @@ exports.postLogin = (req,res, next) =>{
         });
     }).catch((err) => { 
         console.error(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     });
 };
 
 exports.postSignup = (req,res, next) =>{
    const {email, userName, password, confirmPassword } = req.body;
    const errors = validationResult(req);
+   console.log(errors.array());
    if(!errors.isEmpty()){
        return res.status(422).render('auth/signup', {
         pageTitle: 'signup',
@@ -83,7 +90,8 @@ exports.postSignup = (req,res, next) =>{
         productCSS: true,
         activeAddProduct: true,
         oldInput:{email, userName},
-        errorMessage: errors.array()[0].msg
+        errorMessage: errors.array()[0].msg,
+        validationErrors: errors.array()
     });
    }
     bcrypt.hash(password, 12)
@@ -108,15 +116,17 @@ exports.postSignup = (req,res, next) =>{
             })
         }).catch((err) => {
             console.error(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 };
 
 exports.getReset = (req,res, next) =>{
     const {email} = req.params;
-    console.log(email,'THIS SHOULD BE AN EMAIL')
     res.render('auth/reset', {
         pageTitle: 'Reset Password',
-        path:'/reset',
+        path:'/reset-password',
         formsCSS: true,
         productCSS: true,
         activeAddProduct: true,
@@ -159,6 +169,9 @@ exports.postReset = (req, res, next) =>{
             })
         }).catch((err) => {
             console.error(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
     });
 };
@@ -179,6 +192,9 @@ exports.getNewPassword = ( req, res, next) =>{
         });  
     }).catch((err) => {
         console.error(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     });
 };
 
@@ -211,6 +227,9 @@ exports.postNewPassword = (req, res, next ) =>{
         })
     }).catch((err) => {
         console.error(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     });
 
 }

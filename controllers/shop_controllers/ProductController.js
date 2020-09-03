@@ -13,7 +13,10 @@ exports.getShop = (req,res, next)=>{
             productCSS: true,
         });    
     }).catch((err) => {
-        console.error(err)
+        console.error(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     });
 };
 
@@ -30,7 +33,10 @@ exports.getProducts = (req,res, next)=>{
             productCSS: true,
         });
     }).catch((err) => {
-        console.log(err)
+        console.error(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     });
 };
 
@@ -47,5 +53,8 @@ exports.getProductDetail = (req,res,next) =>{
         })
     }).catch((err) => {
         console.error(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     });
 }

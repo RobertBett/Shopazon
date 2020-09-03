@@ -15,7 +15,7 @@ const productSchema = new Schema({
         type: String,
         required: true,
     },
-    imageUrl:{
+    imagePath:{
         type: String,
         required: true,
     },
@@ -35,10 +35,10 @@ module.exports = mongoose.model('Product', productSchema);
 
 
 // class Product {
-//     constructor(title, price, imageUrl, description, productId, userId){
+//     constructor(title, price, image, description, productId, userId){
 //         this.title = title;
 //         this.price = price;
-//         this.imageUrl = imageUrl,
+//         this.image = image,
 //         this.description = description;
 //         this._id = productId && ObjectId(productId);
 //         this.userId = userId;

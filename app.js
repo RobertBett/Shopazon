@@ -9,16 +9,34 @@ const session = require('express-session');
 const csrf = require('csurf');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
+const multer = require('multer');
+var uniqid = require('uniqid');
 
 
 const csrfProtection = csrf();
 
-// const { mongoConnect } = require('./utils/database');
-const uri = 'mongodb+srv://robert:shopazon@cluster0-rdtzx.mongodb.net/Shop?retryWrites=true&w=majority';
+const fileStorage = multer.diskStorage({
+    destination:(req, file, cb)=>{
+        cb(null, 'images');
+    },
+    filename: (req, file, cb) =>{
+        cb(null, uniqid() + '_' + file.originalname);
+    }
+});
+
+const fileFilter = ( req, file, cb) =>{
+    if(file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
+        cb(null, true);
+    }else{
+        console.log('THIS WAS REJECTED');
+        cb(null, false);
+    }
+};
+
+const uri = 'mongodb+srv://robert:shopazon@cluster0.0jyop.mongodb.net/Shop?retryWrites=true&w=majority';
 const store = new MongoDBStore({
     uri,
     collection: 'sessions',
-    
 });
 
 app.set('view engine', 'ejs');
@@ -28,13 +46,15 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const User = require('./models/User');
-// const { getDb } = require('./utils/database');
 
 
 const port = 8080
 
 app.use(bodyParser.urlencoded({ extended: false}));
+app.use(multer({ storage: fileStorage, fileFilter}).single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use(
     session({ 
         secret: 'my secret', 
@@ -44,7 +64,7 @@ app.use(
     })
 );
 app.use(csrfProtection);
-app.use((req,res,next)=>{
+app.use((req, res ,next)=>{
     const UserId = req.session.user && req.session.user._id
     User.findById(UserId)
         .then((user) => {
@@ -59,6 +79,7 @@ app.use((req, res, next) =>{
     res.locals.isLoggedIn = req.session.isLoggedIn;
     res.locals.csrfToken = req.csrfToken();
     res.locals.userName = req.session.user && req.session.user.userName;
+
     next();
 })
 app.use(flash());
@@ -66,38 +87,16 @@ app.use(flash());
 app.use(adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-app.use('/',get404Page); 
+// app.get('/500', get500Page)
+app.use('/',get404Page);
+// app.use(( error, req, res, next) =>{
+//     res.redirect('/500');
+// })
 
 
-// mongoConnect(()=>{
-//     User.findById('5ee2ed44b1b89c2549942daf')
-//     .then((user) => {
-//         if(user){
-//             const { _id, username, email,cart} = user;
-//             const db = getDb();
-//             return db.collection('user')
-//                 .updateOne(
-//                     { _id}, 
-//                     { $set:{ username, email, cart, userId:user._id} } 
-//                 )
-//         }
-//         console.log(user, ['HOW SWAY'])
-//         const newUser = new User('Roberto', 'test@test.com')
-//         return !user && newUser.save()
-//     })
-//     .then((value) => {
-//         app.listen(port, () => {
-//             console.log(chalk.green.bold(`On Port:${port}`))
-//             console.log(chalk.green.bold.underline(`Running on http://localhost:${port}`))
-//         });
-//     })
-//     .catch((err) => {
-//         console.error(err);
-//     });
-// });
 
 mongoose.connect(uri, { useFindAndModify: false })
-.then((result) => {
+.then(() => {
     app.listen(port, () => {
         console.log(chalk.green.bold(`On Port:${port}`))
         console.log(chalk.green.bold.underline(`Running on http://localhost:${port}`))
