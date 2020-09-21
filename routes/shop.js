@@ -2,11 +2,12 @@ const express = require('express');
 const router = express();
 const { getCart, postCartItem,postCartDelete,
         postCartItemDelete,postAddCartItem } = require('../controllers/shop_controllers/CartController');
-const { getCheckout, getOrders, postOrder } = require('../controllers/shop_controllers/OrderController');
+const { getCheckout, getOrders, postOrder, getInvoice } = require('../controllers/shop_controllers/OrderController');
 const {getProducts, getShop,getProductDetail} = require('../controllers/shop_controllers/ProductController');
 const isAuth = require('../middleware/is-auth');
 
 router.get('/cart',isAuth, getCart);
+router.get('/orders/:orderId', isAuth, getInvoice)
 router.post('/add-to-cart/:productId',isAuth, postCartItem);
 router.get('/orders',isAuth, getOrders);
 router.get('/products', getProducts);

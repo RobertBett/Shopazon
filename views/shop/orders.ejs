@@ -14,7 +14,7 @@
                                 <img src="<%= product.productData.imagePath %>" alt="A Book">
                             </div>
                             <span class="cart__title">
-                                <h1><%= product.productData.title %> </h1>
+                                <h1><%= product.productData.title %> - <a href="/orders/<%= order._id %>">Invoice</a></h1>
                                 <form action="/cart-delete-one-item/<%= order._id %>" method="post">
                                     <button class="btn danger" type="submit"><i class="icon-minus"></i></button>
                                 </form> 

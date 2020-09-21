@@ -14,10 +14,12 @@
                         <span class="cart__title">
                             <h1><%= product.productId.title %> </h1>
                             <form action="/cart-delete-one-item/<%= product.productId._id %>" method="post">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <button class="btn danger" type="submit"><i class="icon-minus"></i></button>
                             </form> 
                             ( <%= product.quantity %> )
                             <form action="/cart-add-one-item/<%= product.productId._id %>" method="post">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <button class="btn" type="submit"><i class="icon-plus"></i></button>
                             </form>
                         </span>
