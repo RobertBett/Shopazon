@@ -7,21 +7,15 @@
         <% if (orders.length > 0){ %>
             <ul class="cart__item-list">
                 <% orders.forEach(order => { %>
-                    <h1 class="centered"><%= order._id %></h1>
+                    <h1 class="centered"><%= order._id %> <a href="/orders/<%= order._id %>">Invoice</a></h1>
                     <% order.products.forEach(product =>{ %>
                         <li class="cart__item">
                             <div class="cart__image">
                                 <img src="<%= product.productData.imagePath %>" alt="A Book">
                             </div>
                             <span class="cart__title">
-                                <h1><%= product.productData.title %> - <a href="/orders/<%= order._id %>">Invoice</a></h1>
-                                <form action="/cart-delete-one-item/<%= order._id %>" method="post">
-                                    <button class="btn danger" type="submit"><i class="icon-minus"></i></button>
-                                </form> 
+                                <h1><%= product.productData.title %></h1>
                                 ( <%= product.quantity %> )
-                                <form action="/cart-add-one-item/<%= order._id %>" method="post">
-                                    <button class="btn" type="submit"><i class="icon-plus"></i></button>
-                                </form>
                             </span>
                             <div class="cart__total">
                                 <p>Subtotal: $<%= product.orderTotal %></p>

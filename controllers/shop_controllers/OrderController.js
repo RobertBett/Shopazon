@@ -40,28 +40,23 @@ exports.getInvoice = (req, res, next ) =>{
         res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"');
         pdfDoc.pipe(fs.createWriteStream(invoicePath));
         pdfDoc.pipe(res);
-        pdfDoc.text('Hello World');
-        pdfDoc.fontSize(26).text('Invoice', {
+        pdfDoc.fontSize(20).text('Invoice', {
             underline:true
         });
-        pdfDoc.text('--------------------');
+        let totalPrice = 0;
         order.products.forEach((product) => {
-            pdfDoc.text(`${product.productData.title} x ${product.quantity} $${product.productData.price}`);
-        })
+            totalPrice += product.quantity * product.productData.price;
+            pdfDoc.fontSize(15).text(`${product.productData.title} x ${product.quantity} $${product.productData.price}`,{
+                bulletRadius:true,
+            });
+        });
+        pdfDoc.text('--------------------');
+        pdfDoc.fontSize(15).text(`Total Price $${totalPrice}`);
         pdfDoc.end();
-
-        // fs.readFile(invoicePath,(err, data)=>{
-        //     if(err){
-        //         return next();
-        //     };
-
-        // });
-        // const file = fs.createReadStream(invoicePath);
-        // file.pipe(res);
     })
     .catch((value) => {
         console.error(value);
-    })
+    });
 };
 
 
@@ -80,7 +75,6 @@ exports.postOrder = (req, res, next) =>{
     .execPopulate()
     .then(user => {
         const products = user.cart.items.map((i) => {
-            console.log(i.productId._doc)
             return { productData:{ ...i.productId._doc }, quantity: i.quantity}
         });
         const newOrder = new Order({

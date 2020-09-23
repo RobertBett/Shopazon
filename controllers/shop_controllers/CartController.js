@@ -41,7 +41,6 @@ exports.postCartItem = ( req, res, next) =>{
 }
 
 exports.postCartDelete = ( req, res, next) =>{
-    console.log('IS IT GETTING HERE??')
     const { productId } = req.params;
     req.user.deleteCartItem(productId)
     .then((value) => {

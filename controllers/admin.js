@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Product = require('../models/Product');
+const fileHandler = require('../utils/file');
 
 
 exports.getAddProduct =  (req, res, next)=>{
@@ -74,7 +75,7 @@ exports.postAddProduct = (req,res, next)=>{
     }
     if(!errors.isEmpty()) return badRes(errors.array()[0].msg,errors.array());
     if(!imageUrl) return badRes('Attached file is not an image', []);
-    const imagePath = `/${imageUrl.path}`;
+    const imagePath = `${imageUrl.path}`;
     const product = new Product({
         title,
         price, 
@@ -83,7 +84,7 @@ exports.postAddProduct = (req,res, next)=>{
         userId
     })
     product.save()
-    .then((result) => {
+    .then(() => {
         res.redirect('/');
     })
     .catch((err) => {
@@ -106,7 +107,7 @@ exports.postEditProduct = (req, res, next) =>{
     .then((product) => {
         imagePath = product.imagePath;
 
-        if(imageUrl)imagePath = `/${imageUrl.path}`
+        if(imageUrl)imagePath = `${imageUrl.path}`
 
         if(!errors.isEmpty()) {
             return res.render('admin/add-edit-product', {
@@ -146,7 +147,12 @@ exports.postEditProduct = (req, res, next) =>{
 
 exports.postDeleteProduct = (req, res, next) =>{
     const { productId } = req.params;
-    Product.deleteOne({_id:productId, userId:req.user._id})
+    Product.findById(productId)
+    .then((product) => {
+        fileHandler.deleteFile(`${product.imagePath}`)
+        req.user.deleteCartItem(productId)
+        return Product.deleteOne({_id:productId, userId:req.user._id});
+    })
     .then(() => {
         res.redirect('/admin/products');
     }).catch((err) => {
