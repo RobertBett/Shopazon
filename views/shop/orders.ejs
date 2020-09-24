@@ -7,33 +7,22 @@
         <% if (orders.length > 0){ %>
             <ul class="cart__item-list">
                 <% orders.forEach(order => { %>
-                    <h1 class="centered"><%= order._id %> <a href="/orders/<%= order._id %>">Invoice</a></h1>
                     <% order.products.forEach(product =>{ %>
                         <li class="cart__item">
                             <div class="cart__image">
                                 <img src="<%= product.productData.imagePath %>" alt="A Book">
                             </div>
                             <span class="cart__title">
-                                <h1><%= product.productData.title %></h1>
-                                ( <%= product.quantity %> )
+                                <h1><%= product.productData.title %> ( <%= product.quantity %> )</h1>
                             </span>
                             <div class="cart__total">
-                                <p>Subtotal: $<%= product.orderTotal %></p>
+                                <h2>Subtotal: $<%= product.productData.price * product.quantity %></h2>
                             </div>
-                            <form action="/cart-delete-item/<%= order._id %>" method="post">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <button class="btn danger" type="submit"><i class="icon-trash"></i> Remove</button>
-                            </form>
                         </li>
                     <% })%>
+                    <h1 class="centered">Order Total  <a href="/orders/<%= order._id %>">Invoice</a></h1>
                 <% }) %>
             </ul>
-            <div class="centered">
-                <form action="/create-order" method="post">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <button class="btn" type="submit"><i class="icon-shopping-cart"></i> Place your Order</button>
-                </form>
-            </div>
         <% } else { %> 
             <h1> No Orders Yet </h1>
         <% } %>

@@ -4,7 +4,7 @@
     <%- include('../includes/navigation.ejs') %>
     <main>
     <% if( products.length) {%>
-        <h1>My Products</h1>
+        <h1>Products</h1>
         <p>List of all the products...</p>
         <div class="grid">
             <% products.forEach((product)=>{ %>
@@ -31,6 +31,7 @@
             </article>
             <% }) %>
         </div>
+        <%- include('../includes/pagination.ejs', {currentPage, hasNextPage,hasPreviousPage,nextPage,previousPage,lastPage}) %>
     <% } else { %>
         <h1> No products found 😭 </h1>
     <% } %>

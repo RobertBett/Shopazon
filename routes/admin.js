@@ -3,7 +3,7 @@ const { body } = require('express-validator/check');
 const router = express.Router();
 const { getAddProduct, postAddProduct,
         getAdminProducts, getEditProduct, 
-        postEditProduct, postDeleteProduct
+        postEditProduct, deleteProduct
      } = require('../controllers/admin');
 const isAuth = require('../middleware/is-auth');
 
@@ -25,10 +25,9 @@ const validations = [
 router.get('/admin/add-product',isAuth, getAddProduct)
 router.get('/admin/edit-product/:productId',isAuth, getEditProduct)
 router.get('/admin/products', isAuth,getAdminProducts)
-
 router.post('/admin/add-product', isAuth, validations , postAddProduct);
 router.post('/admin/edit-product/:productId', isAuth, validations , postEditProduct);
-router.post('/admin/delete-product/:productId', isAuth, postDeleteProduct)
+router.delete('/admin/delete-product/:productId', isAuth, deleteProduct)
 
 
 // exports.adminRoutes = router

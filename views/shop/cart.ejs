@@ -24,7 +24,7 @@
                             </form>
                         </span>
                         <div class="cart__total">
-                            <p>Subtotal: $<%= product.productId.price %></p>
+                            <p>Subtotal: $<%= product.productId.price * product.quantity %></p>
                         </div>
                         <form action="/cart-delete-item/<%= product.productId._id %>" method="post">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -34,10 +34,7 @@
                 <% }) %>
             </ul>
             <div class="centered">
-                <form action="/create-order" method="post">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <button class="btn" type="submit"><i class="icon-shopping-cart"></i> Checkout</button>
-                </form>
+                <a href="/checkout" class="btn">Order Now!</a>
             </div>
         <% } else { %> 
             <h1> Nothing in your cart </h1>

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -33,7 +34,7 @@ const fileFilter = ( req, file, cb) =>{
     }
 };
 
-const uri = 'mongodb+srv://robert:shopazon@cluster0.0jyop.mongodb.net/Shop?retryWrites=true&w=majority';
+const uri = process.env.MONGO_URL;
 const store = new MongoDBStore({
     uri,
     collection: 'sessions',

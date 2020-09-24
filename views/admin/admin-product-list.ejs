@@ -21,16 +21,17 @@
                 </div>
                 <div class="card__actions">
                     <a href='/admin/edit-product/<%=product._id %>?edit=true' class="btn">Edit</a>
-                    <form action='/admin/delete-product/<%= product._id %>' method="POST">
+                        <input type="hidden" value="<%=product._id %>" name="productId">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button class="btn danger"><i class="icon-trash"></i> Delete</button>
-                    </form>
+                        <button class="btn danger" type="button" onclick="deleteProduct(this)"><i class="icon-trash"></i> Delete</button>
                 </div>
             </article>
             <% }) %>
         </div>
+        <%- include('../includes/pagination.ejs', {currentPage, hasNextPage,hasPreviousPage,nextPage,previousPage,lastPage}) %>
     <% } else { %>
         <h1> No products found 😭 </h1>
     <% } %>
     </main>
 <%- include('../includes/footer.ejs') %>
+<script src="/js/admin.js"></script>
