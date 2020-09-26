@@ -8,7 +8,7 @@ exports.getOrders = (req,res, next) =>{
     .then( orders => {
         res.render('shop/orders', {
             pageTitle: 'orders',
-            orders,
+            orders:orders.reverse(),
             path:'/orders',
             formsCSS: true,
             productCSS: true,

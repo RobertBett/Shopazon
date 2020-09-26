@@ -7,7 +7,7 @@ const sendgridTransport = require("nodemailer-sendgrid-transport");
 
 const transporter = nodemailer.createTransport(sendgridTransport({
     auth:{ 
-        api_key:'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'
+        api_key: process.env.SEND_GRID_KEY,
     }
 }));
 
@@ -54,7 +54,6 @@ exports.postLogin = (req,res, next) =>{
     }
     User.findOne({ email })
     .then((user) => {
-        console.log(password)
         bcrypt.compare(password, user.password)
         .then((match) => {
             if(match){
@@ -65,7 +64,7 @@ exports.postLogin = (req,res, next) =>{
                     res.redirect('/')
                 })
             }
-            throw new Error()
+            throw new Error('Incorrect Password')
         }).catch((err) => {
             console.error(err)
             return res.redirect('/login')

@@ -11,7 +11,7 @@ const csrf = require('csurf');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 const multer = require('multer');
-var uniqid = require('uniqid');
+const uniqid = require('uniqid');
 
 
 const csrfProtection = csrf();
@@ -29,7 +29,6 @@ const fileFilter = ( req, file, cb) =>{
     if(file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
         cb(null, true);
     }else{
-        console.log('THIS WAS REJECTED');
         cb(null, false);
     }
 };
@@ -88,11 +87,8 @@ app.use(flash());
 app.use(adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-// app.get('/500', get500Page)
+
 app.use('/',get404Page);
-// app.use(( error, req, res, next) =>{
-//     res.redirect('/500');
-// })
 
 
 
