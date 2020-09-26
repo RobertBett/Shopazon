@@ -5,23 +5,56 @@
 <body>
     <%- include('../includes/navigation.ejs') %>
     <main>
-        <form class="product-form" action="/admin/<%= edit ? `edit-product/${product.id}` : 'add-product' %>" method="POST">
+        <form class="product-form" action="/admin/<%= edit ? `edit-product/${product._id}` : 'add-product' %>" method="POST" enctype="multipart/form-data">
+            <% if(errorMessage) { %>
+                <p class="user-message user-message--error"><%= errorMessage %></p>
+                <% } %>
             <div class="form-control">
                 <label for="title">Title</label>
-                <input type="text" name="title" id="title" value="<%= edit ? product.title : '' %>">
+                <input 
+                    class="<%= validationErrors.find(e => e.param === 'title') && 'invalid' %>"
+                    type="text" 
+                    name="title" 
+                    id="title" 
+                    value="<%= edit ? product.title : oldInput.title %>">
             </div>
             <div class="form-control">
                     <label for="description">Description</label>
-                    <textarea  name="description" rows='5' id="description" > <%= edit ?  product.description : ''%></textarea>
+                    <textarea  
+                        class="<%= validationErrors.find(e => e.param === 'description') && 'invalid' %>"
+                        name="description" 
+                        rows='5' 
+                        id="description" ><%= edit ?  product.description : oldInput.description %></textarea>
             </div>
+            <!-- <div class="form-control">
+                    <label for="image">Image</label>
+                    <input 
+                        class="<%= validationErrors.find(e => e.param === 'image') && 'invalid' %>"
+                        type="text" 
+                        name="image" 
+                        id="image" 
+                        value="<%= edit ?  product.image : oldInput.image %>">
+            </div> -->
             <div class="form-control">
-                    <label for="imageUrl">Image</label>
-                    <input type="text" name="imageUrl" id="imageUrl" value="<%= edit ?  product.imageUrl : '' %>">
+                <label for="image">Image</label>
+                <input 
+                    class="<%= validationErrors.find(e => e.param === 'image') && 'invalid' %>"
+                    type="file" 
+                    name="image" 
+                    id="image" 
+                    value="<%= edit ?  product.imagePath : oldInput.image %>">
             </div>
             <div class="form-control">
                     <label for="price">price</label>
-                    <input type="number" name="price" id="price" step="0.01" value="<%= edit ? product.price : '' %>">
+                    <input 
+                        class="<%= validationErrors.find(e => e.param === 'price') && 'invalid' %>"
+                        type="number" 
+                        name="price" 
+                        id="price" 
+                        step="0.01" 
+                        value="<%= edit ? product.price : oldInput.price %>">
             </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="btn" type="submit"> <%= edit ? 'Update Product' : 'Add Product' %></button>
         </form>
     </main>

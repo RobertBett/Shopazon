@@ -1,70 +1,97 @@
-const fs = require('fs');
-const path = require('path');
-const rootDirectory = require('../utils/path');
-const Cart = require('./Cart');
+const mongoose = require('mongoose');
 
-const filePath = path.join(rootDirectory, 'data', 'products.json' );
+const Schema = mongoose.Schema;
 
-const getProductsFromFile =(done) =>{
-// CHECK IF THE FILE EXISTS AKA IF THERE'S ANY EXISTING PRODUCTS AND IF THERE ISNT IT RETURNS AN EMPTY ARRAY
-    fs.readFile(filePath, (err, fileContent)=>{
-        if(err){
-            return done([])
-        }
-        done(JSON.parse(fileContent));
-    });
-}
-
-module.exports = class Product{
-    constructor(id,{ title, description,imageUrl, price}){
-        this.id = id || Math.random().toString();
-        this.title = title;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.price = price
+const productSchema = new Schema({
+    title:{
+        type: String,
+        required: true,
+    },
+    price:{
+        type: Number,
+        required: true,
+    },
+    description:{
+        type: String,
+        required: true,
+    },
+    imagePath:{
+        type: String,
+        required: true,
+    },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref:'User',
+        required: true
     }
+});
 
-    save(){
-        //FIRST ARG IS FOR THE ROOT DIRECTORY 2ND IS FOR THE FOLDER 3RD IS FOR THE FILE NAME
-        // const filePath = path.join(rootDirectory, 'data', 'products.json' );
-        getProductsFromFile(products =>{
-            const existingProductIndex = products.findIndex((product) => product.id === this.id)
-            if(existingProductIndex !== -1){
-                const updatedProducts = [...products];
-                updatedProducts[existingProductIndex] = this;
-                fs.writeFile(filePath, JSON.stringify(updatedProducts), (err)=>{
-                    console.log(err);
-                })
+module.exports = mongoose.model('Product', productSchema);
 
-            }else{ 
-                products.push(this) 
-                fs.writeFile(filePath, JSON.stringify(products), (err)=>{
-                    console.log(err);
-                })
-            }
+
+// const { ObjectId } = require('mongodb');
+
+// const { getDb } = require('../utils/database');
+
+
+// class Product {
+//     constructor(title, price, image, description, productId, userId){
+//         this.title = title;
+//         this.price = price;
+//         this.image = image,
+//         this.description = description;
+//         this._id = productId && ObjectId(productId);
+//         this.userId = userId;
+//     }
+
+//     save(){
+//         const db = getDb();
+//         let dbOperation;
+
+//         this._id ?
+//             dbOperation = db.collection('products')
+//                     .updateOne({ _id: this._id }, { $set: this })
+//         :
+//             dbOperation = db.collection('products')
+//                     .insertOne(this)
+
+        
+//         return dbOperation
+//             .then()
+//             .catch((err) => {
+//                 console.error(err); 
+//             });
+//     };
+
+//     static fetchAll() {
+//         const db = getDb();
+//         return db.collection('products').find().toArray()
+//         .then((result) => {
+//             return result;
+//         }).catch((err) => {
+//             console.error(err);  
+//         });
+//     };
+
+//     static findById(productId){
+//         const db = getDb();
+//         return db.collection('products').findOne({ _id: ObjectId(productId) })
+//         .then((product) => {
+//             return product
+//         }).catch((err) => {
+//             console.error(err);
+//         });
+//     };
+
+//     static deleteById(productId){
+//         const db = getDb();
+//         return db.collection('products').deleteOne({ _id: ObjectId(productId)})
+//         .then()
+//         .catch((err) => {
+//             console.error(err);
             
-        })
-    }
+//         });
+//     }
+// };
 
-    static fetchAll(done){
-        getProductsFromFile(done)
-    }
-    
-    static deleteById(id, done){
-        getProductsFromFile(products =>{
-            const deletedProduct = products.find(product => product.id == id)
-            const newProducts = products.filter((product) => product.id !== id)
-            fs.writeFile(filePath, JSON.stringify(newProducts), (err)=>{
-                Cart.deleteProductFromCart(id,deletedProduct.price)
-            })
-
-        })
-        done()
-    }
-    static findById(id, done){
-        getProductsFromFile(products=> {
-         const product = products.find(product => product.id === id)
-         done(product)
-        })
-    }
-}
+// module.exports = Product;

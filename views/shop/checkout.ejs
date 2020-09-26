@@ -1,0 +1,44 @@
+<%- include('../includes/header.ejs') %>
+</head>
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <h1 class="centered"><i class="icon-shopping-cart"></i>  Checkout</h1>
+    <main>
+        <% if (products.length > 0){ %>
+            <ul class="cart__item-list">
+                <% products.forEach(product => { %>
+                    <li class="cart__item">
+                        <div class="cart__image">
+                            <img src="<%= product.productId.imagePath %>" alt=" <%= product.productId.title %> ">
+                        </div>
+                        <span class="cart__title">
+                            <h1><%= product.productId.title %> </h1>
+                            ( <%= product.quantity %> )
+                        </span>
+                        <div class="cart__total">
+                            <p>Subtotal: $<%= product.productId.price * product.quantity  %></p>
+                        </div>
+                    </li>
+                <% }) %>
+            </ul>
+            <div class="centered">
+                <h2>Total $<%= totalPrice %> </h2>
+                <button id="order-btn" class="btn" type="submit"><i class="icon-shopping-cart"></i> Order Now</button>
+                <script src="https://js.stripe.com/v3/"></script>
+                <script>
+                    var stripe = Stripe('pk_test_51HUhM5Es45ZY6ArhE5qfvSWm4kXPLjI5NcLol2thvPyhyxBLvFAsz5iYxvt3r0R7UbuNnS8hCATIZyUAU5QXBDz000HOqVTqC2');
+                    var orderButton = document.getElementById('order-btn');
+                    orderButton.addEventListener('click', function(){
+                        console.log('<%= sessionId %>');
+                        stripe.redirectToCheckout({
+                            sessionId:'<%= sessionId %>'
+                        });
+                    });
+                </script>
+            </div>
+        <% } else { %> 
+            <h1> Nothing in your cart </h1>
+        <% } %>
+    </main>
+
+<%- include('../includes/footer.ejs') %>

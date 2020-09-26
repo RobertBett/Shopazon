@@ -1,0 +1,38 @@
+<%- include('../includes/header.ejs') %>
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
+<link rel="stylesheet" href="/css/login.css">
+
+</head>
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <form class="login-form" action="/login" method="POST">
+            <% if(errorMessage) { %>
+            <p class="user-message user-message--error"><%= errorMessage %></p>
+            <% } %>
+            <div class="form-control">
+                <label for="email">email</label>
+                <input 
+                    class="<%= validationErrors.find(e => e.param === 'email') && 'invalid' %>"
+                    type="email" 
+                    name="email" 
+                    id="email" 
+                    value='<%= oldInput.email %>'>
+            </div>
+            <div class="form-control">
+                    <label for="password">Password</label>
+                    <input 
+                        class="<%= validationErrors.find(e => e.param === 'password') && 'invalid' %>"
+                        type="password" 
+                        name="password" 
+                        id="password"
+                        value='<%= oldInput.password %>'
+                        >
+            </div>
+            <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+            <button class="btn" type="submit">Login</button>
+            <a class="reset-link" href="/reset-password/<%= oldInput.email || 'Enter Email' %>">Forgot Password?</a>
+        </form>
+    </main>
+<%- include('../includes/footer.ejs') %>

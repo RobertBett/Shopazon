@@ -3,5 +3,28 @@
 <body>
     <%- include('../includes/navigation.ejs') %>
     <h1>Your Orders</h1>
-
+    <main>
+        <% if (orders.length > 0){ %>
+            <ul class="cart__item-list">
+                <% orders.forEach(order => { %>
+                    <h1 class="centered"><a href="/orders/<%= order._id %>">Order Receipt</a></h1>
+                    <% order.products.forEach(product =>{ %>
+                        <li class="cart__item">
+                            <div class="cart__image">
+                                <img src="<%= product.productData.imagePath %>" alt="A Book">
+                            </div>
+                            <span class="cart__title">
+                                <h1><%= product.productData.title %> ( <%= product.quantity %> )</h1>
+                            </span>
+                            <div class="cart__total">
+                                <h2>Subtotal: $<%= product.productData.price * product.quantity %></h2>
+                            </div>
+                        </li>
+                    <% })%>
+                <% }) %>
+            </ul>
+        <% } else { %> 
+            <h1> No Orders Yet </h1>
+        <% } %>
+    </main>
 <%- include('../includes/footer.ejs') %>

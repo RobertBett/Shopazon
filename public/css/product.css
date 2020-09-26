@@ -6,9 +6,11 @@
 }
 
 .product-item {
-    width: 20rem;
-    max-width: 95%;
+    width: 25rem;
+    max-width: 100%;
     margin: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    border: 1px solid #00695c;
 }
 
 .product__title {
