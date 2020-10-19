@@ -12,9 +12,14 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 const multer = require('multer');
 const uniqid = require('uniqid');
-
-
 const csrfProtection = csrf();
+const morgan = require('morgan');
+
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
+const User = require('./models/User');
+
 
 const fileStorage = multer.diskStorage({
     destination:(req, file, cb)=>{
@@ -42,14 +47,9 @@ const store = new MongoDBStore({
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
-const authRoutes = require('./routes/auth');
-const User = require('./models/User');
 
 
-const port = 8080
-
+app.use(morgan('[:date[clf]] :method :url HTTP/:http-version :status :res[content-length]'));
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(multer({ storage: fileStorage, fileFilter}).single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -65,13 +65,13 @@ app.use(
 );
 app.use(csrfProtection);
 app.use((req, res ,next)=>{
-    const UserId = req.session.user && req.session.user._id
+    const UserId = req.session.user && req.session.user._id;
     User.findById(UserId)
         .then((user) => {
             req.user = user;
             next()
         }).catch((err) => { 
-            console.log(err)
+            console.log(err);
         });
 });
 
@@ -91,6 +91,7 @@ app.use(authRoutes);
 app.use('/',get404Page);
 
 
+const port = 8080;
 
 mongoose.connect(uri, { useFindAndModify: false })
 .then(() => {

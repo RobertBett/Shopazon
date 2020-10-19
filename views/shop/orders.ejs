@@ -11,7 +11,7 @@
                     <% order.products.forEach(product =>{ %>
                         <li class="cart__item">
                             <div class="cart__image">
-                                <img src="<%= product.productData.imagePath %>" alt="A Book">
+                                <img src="/<%= product.productData.imagePath %>" alt="A Book">
                             </div>
                             <span class="cart__title">
                                 <h1><%= product.productData.title %> ( <%= product.quantity %> )</h1>
